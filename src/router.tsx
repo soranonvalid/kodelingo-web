@@ -1,7 +1,8 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Main from "./pages/main";
-import NotFound from "./pages/notFound";
 import AuthLayout from "./layout/auth/AuthLayout";
+import LandingPage from "./pages/LandingPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import TestChat from "./pages/TestChat";
 function Route() {
   const router = createBrowserRouter([
     {
@@ -9,11 +10,15 @@ function Route() {
       children: [
         {
           path: "*",
-          element: <NotFound />,
+          element: <NotFoundPage />,
         },
         {
           path: "/",
-          element: <Main />,
+          element: <LandingPage />,
+        },
+        {
+          path: "/test",
+          element: <TestChat />,
         },
       ],
     },
