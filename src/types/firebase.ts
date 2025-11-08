@@ -1,9 +1,12 @@
 export type FirebasePrimitive = string | number | boolean | null;
 
 export type FirebaseValue =
-  | FirebasePrimitive
+  | string
+  | number
+  | boolean
+  | null
   | FirebaseValue[]
-  | { [key: string]: FirebaseValue };
+  | { [key: string]: FirebaseValue | object }; // ✅ objek diizinkan
 
 export interface RealtimeValueResult<T = FirebaseValue> {
   data: T | null;
@@ -20,3 +23,16 @@ export interface CreateValueResult<T = FirebaseValue> {
   loading: boolean;
   data: React.MutableRefObject<{ key: string | null; value: T | null } | null>;
 }
+
+export type FirebaseUser = {
+  uid: string;
+  displayName: string;
+  email: string;
+  photoURL: string;
+  lastLogin: number;
+};
+
+export type Request = {
+  from: string;
+  timestamp: number;
+};

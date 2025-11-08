@@ -1,3 +1,4 @@
+import { withProtected } from "@/utils/auth/use-protected";
 import getObjectValues from "@/utils/firebase/get-object-values";
 import useCreateValue from "@/utils/firebase/use-create-value";
 import useRealtimeValue from "@/utils/firebase/use-realtime-value";
@@ -60,4 +61,5 @@ const TestChat = () => {
   );
 };
 
-export default TestChat;
+const TestChatPage = withProtected(TestChat);
+export default TestChatPage;

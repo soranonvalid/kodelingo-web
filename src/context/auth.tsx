@@ -2,6 +2,7 @@ import { auth } from "@/services/firebase";
 import { useEffect, useState, type ReactNode } from "react";
 import { InitialUserState, useUser } from "./user";
 import Loading from "@/components/Loading";
+import useCreateValue from "@/utils/firebase/use-create-value";
 
 interface AuthStateChangeProviderProps {
   children: ReactNode;
@@ -12,11 +13,19 @@ const AuthStateChangeProvider = ({
 }: AuthStateChangeProviderProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const { SetUser } = useUser();
+  const { setValue } = useCreateValue();
 
   const InitiateAuthStateChange = () => {
     auth.onAuthStateChanged((user) => {
       if (user) {
         SetUser({ email: user.email, uid: user.uid, avatar: user.photoURL });
+        setValue("users/" + user.uid, {
+          uid: user.uid,
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          lastLogin: Date.now(),
+        });
         console.log("User signed in:", user);
       } else {
         SetUser(InitialUserState);

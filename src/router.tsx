@@ -2,7 +2,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AuthLayout from "./layout/auth/AuthLayout";
 import LandingPage from "./pages/LandingPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import TestChat from "./pages/TestChat";
+import TestChatPage from "./pages/TestChatPage";
+import LoginPage from "./pages/LoginPage";
+import FriendsListPage from "./pages/FriendsListPage";
 function Route() {
   const router = createBrowserRouter([
     {
@@ -17,8 +19,16 @@ function Route() {
           element: <LandingPage />,
         },
         {
+          path: "/login",
+          element: <LoginPage />,
+        },
+        {
+          path: "/friends",
+          element: <FriendsListPage />,
+        },
+        {
           path: "/test",
-          element: <TestChat />,
+          element: <TestChatPage />,
         },
       ],
     },
