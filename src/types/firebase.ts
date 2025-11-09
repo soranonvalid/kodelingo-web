@@ -36,3 +36,19 @@ export type Request = {
   from: string;
   timestamp: number;
 };
+
+export type ChatMessage = {
+  sender: string;
+  text: string;
+  timestamp: number;
+};
+
+export type Chat = {
+  participants: Record<string, true>;
+  messages?: Record<string, ChatMessage>;
+  lastMessage?: {
+    text: string;
+    timestamp: number;
+  };
+  createdAt: number;
+};

@@ -7,7 +7,9 @@ import {
   Bell,
   Check,
   MessageCircleMore,
+  User,
   UserCheck,
+  UserMinus,
   UserPlus,
   X,
 } from "lucide-react";
@@ -25,7 +27,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useUser } from "@/context/user";
 import { type Request } from "@/types/firebase";
-import useFriends from "@/utils/firebase/use-friends";
+import useFriends from "@/utils/friends/use-friends";
+import { useNavigate } from "react-router-dom";
 
 const FriendsList = () => {
   const { uid } = useUser();
@@ -44,8 +47,13 @@ const FriendsList = () => {
     useRealtimeValue<Record<string, Record<string, Request>>>(
       "/friendRequests"
     );
-  const { handleSendRequest, declineFriendRequest, acceptFriendRequest } =
-    useFriends();
+  const navigate = useNavigate();
+  const {
+    handleSendRequest,
+    declineFriendRequest,
+    acceptFriendRequest,
+    removeFriend,
+  } = useFriends();
   const [filteredUsers, setFilteredUsers] = useState<FirebaseUser[]>([]);
   const [isFocused, setIsFocused] = useState(false);
 
@@ -137,7 +145,9 @@ const FriendsList = () => {
                               .photoURL
                           }
                         />
-                        <AvatarFallback>CN</AvatarFallback>
+                        <AvatarFallback>
+                          <User />
+                        </AvatarFallback>
                       </Avatar>
                       <div className="flex flex-col text-sm">
                         <span>
@@ -211,7 +221,9 @@ const FriendsList = () => {
                 >
                   <Avatar className="border-black border">
                     <AvatarImage src={user.photoURL} />
-                    <AvatarFallback>CN</AvatarFallback>
+                    <AvatarFallback>
+                      <User />
+                    </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col text-sm">
                     <span>{user?.displayName}</span>
@@ -263,20 +275,43 @@ const FriendsList = () => {
                 Object.keys(friends || {}).map((fid) => {
                   const friend = users?.[fid];
                   return (
-                    <div className="flex w-full gap-4 items-center hover:bg-black/5 p-3 rounded-lg">
-                      <Avatar className="w-12 h-12">
+                    <div
+                      className="flex w-full gap-4 items-center hover:bg-black/5 p-3 rounded-lg"
+                      key={friend?.uid}
+                    >
+                      <Avatar className="w-12 h-12 border-black border">
                         <AvatarImage src={friend?.photoURL} />
-                        <AvatarFallback>CN</AvatarFallback>
+                        <AvatarFallback>
+                          <User />
+                        </AvatarFallback>
                       </Avatar>
                       <div className="w-full flex flex-col">
                         <span className="text-black">
                           {friend?.displayName}
                         </span>
                       </div>
-                      <div className="ml-auto pr-2">
+                      <div className="ml-auto pr-2 flex gap-7">
                         <Tooltip>
-                          <TooltipTrigger>
-                            <button className="hover:cursor-pointer">
+                          <TooltipTrigger asChild>
+                            <button
+                              className="hover:cursor-pointer"
+                              onClick={() =>
+                                removeFriend(friend?.uid || "error")
+                              }
+                            >
+                              <UserMinus className="w-5" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Remove friend</p>
+                          </TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button
+                              className="hover:cursor-pointer"
+                              onClick={() => navigate("/chat/" + friend?.uid)}
+                            >
                               <MessageCircleMore className="w-5" />
                             </button>
                           </TooltipTrigger>

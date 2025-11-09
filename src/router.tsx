@@ -5,6 +5,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import TestChatPage from "./pages/TestChatPage";
 import LoginPage from "./pages/LoginPage";
 import FriendsListPage from "./pages/FriendsListPage";
+import ChatPage from "./pages/ChatPage";
 function Route() {
   const router = createBrowserRouter([
     {
@@ -29,6 +30,10 @@ function Route() {
         {
           path: "/test",
           element: <TestChatPage />,
+        },
+        {
+          path: "/chat/:friendId",
+          element: <ChatPage />,
         },
       ],
     },
