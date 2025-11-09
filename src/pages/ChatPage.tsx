@@ -64,7 +64,7 @@ const ChatPage = () => {
     ? getObjectValues(messages).sort((a, b) => a.timestamp - b.timestamp)
     : [];
 
-  if (!chatId || isLoading) {
+  if (!chatId || isLoading || !chatList) {
     return <div>Loading...</div>;
   }
 
@@ -75,10 +75,11 @@ const ChatPage = () => {
   return (
     <div className="w-full max-h-svh min-h-svh flex justify-center overflow-y-scroll">
       <div className="max-w-3xl w-full py-3 px-4 md:px-0 h-full flex flex-col">
-        <div className="w-full flex-col">
+        <div className="w-full flex-col flex gap-1">
           {chatList.map((message: ChatMessage, idx) => {
             return (
               <ChatContainer
+                beforeMessage={chatList[idx - 1]}
                 key={`${message.timestamp}-${message.sender}-${idx}`}
                 message={message}
                 friendId={friendId!}

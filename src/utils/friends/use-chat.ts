@@ -38,7 +38,7 @@ export const getOrCreateChat = async (uid1: string, uid2: string) => {
 
   await set(newChatRef, newChat);
   await set(ref(db, `userChats/${uid1}/${chatId}`), true);
-  await set(ref(db, `userChats/${uid1}/${chatId}`), true);
+  await set(ref(db, `userChats/${uid2}/${chatId}`), true);
 
   return chatId;
 };
