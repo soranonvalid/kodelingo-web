@@ -29,7 +29,7 @@ import { useUser } from "@/context/user";
 import { type Request } from "@/types/firebase";
 import useFriends from "@/utils/friends/use-friends";
 import { useNavigate } from "react-router-dom";
-import PageLayout from "@/layout/pageLayout";
+import PageLayout from "@/layout/PageLayout";
 import Loading from "@/components/Loading";
 import ErrPage from "@/components/ui/errPage";
 

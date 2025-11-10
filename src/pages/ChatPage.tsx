@@ -6,7 +6,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useUser } from "@/context/user";
-import PageLayout from "@/layout/pageLayout";
+import PageLayout from "@/layout/PageLayout";
 import type { ChatMessage, FirebaseUser } from "@/types/firebase";
 import { withProtected } from "@/utils/auth/use-protected";
 import getObjectValues from "@/utils/firebase/get-object-values";
@@ -18,7 +18,7 @@ import {
 } from "@/utils/friends/use-chat";
 import useFriends from "@/utils/friends/use-friends";
 import { SendHorizonal, User } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import TextareaAutoSize from "react-textarea-autosize";
@@ -33,6 +33,7 @@ const Chat = () => {
   const [chatId, setChatId] = useState<string | null>(null);
   const { areFriends } = useFriends();
   const { register, handleSubmit, reset, watch } = useForm<MessageInput>();
+  const chatEndRef = useRef<HTMLDivElement | null>(null);
   const {
     data: friendProfile,
     isLoading: friendLoading,
@@ -52,20 +53,32 @@ const Chat = () => {
 
   const { data: messages, isLoading, error } = useChatMessages(chatId ?? "");
 
+  const chatList = useMemo(() => {
+    if (!messages) return [];
+    return getObjectValues(messages).sort((a, b) => a.timestamp - b.timestamp);
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    if (chatList.length > 0) {
+      scrollToBottom();
+    }
+  }, [chatList]);
+
   const handleSend = async (data: MessageInput) => {
     if (!watch("message").trim() || !chatId) return;
     try {
       await sendMessage(chatId!, uid as string, data.message);
+      reset();
     } catch (err) {
       console.error(err);
     } finally {
-      reset();
+      setTimeout(scrollToBottom, 100);
     }
   };
-
-  const chatList = messages
-    ? getObjectValues(messages).sort((a, b) => a.timestamp - b.timestamp)
-    : [];
 
   if (!chatId || isLoading || !chatList || friendLoading) {
     return <div>Loading...</div>;
@@ -88,7 +101,7 @@ const Chat = () => {
           {(friendProfile as FirebaseUser).displayName}
         </p>
       </div>
-      <div className="w-full flex-col flex gap-1 pb-30 max-h-[calc(100svh-100px)] overflow-y-scroll hide-scroll">
+      <div className="w-full flex-col flex gap-1 pb-30 pt-7.5 max-h-[calc(100svh-100px)] overflow-y-scroll hide-scroll">
         {chatList.map((message: ChatMessage, idx) => {
           return (
             <ChatContainer
@@ -98,8 +111,9 @@ const Chat = () => {
             />
           );
         })}
+        <div ref={chatEndRef} />
       </div>
-      <div className="w-full fixed bottom-0 right-0 grid place-items-center pb-10 px-4 bg-white pt-3">
+      <div className="w-full fixed bottom-0 right-0 grid place-items-center pb-18 px-4 bg-white pt-3">
         <form
           onSubmit={handleSubmit(handleSend)}
           className="w-full max-w-3xl relative"

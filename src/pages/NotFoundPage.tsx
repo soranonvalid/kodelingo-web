@@ -1,8 +1,9 @@
-import PageLayout from "@/layout/pageLayout";
+import PageLayout from "@/layout/PageLayout";
+import { withProtected } from "@/utils/auth/use-protected";
 import { CornerDownLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const NotFoundPage = () => {
+const NotFound = () => {
   const navigate = useNavigate();
   return (
     <PageLayout center={true} scroll={false} reqAnimation={true}>
@@ -25,4 +26,5 @@ const NotFoundPage = () => {
   );
 };
 
+const NotFoundPage = withProtected(NotFound);
 export default NotFoundPage;

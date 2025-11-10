@@ -1,4 +1,4 @@
-import PageLayout from "@/layout/pageLayout";
+import PageLayout from "@/layout/PageLayout";
 import { X } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
