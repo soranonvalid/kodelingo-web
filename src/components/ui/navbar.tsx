@@ -18,7 +18,7 @@ const Navbar = () => {
       <div
         onClick={() => navigate("/friends")}
         className={`flex flex-col items-center gap-1 w-min transition-smooth  cursor-pointer ${
-          location.pathname === "/friends"
+          location.pathname === "/friends" || location.pathname === "/chat/:id"
             ? ""
             : "opacity-50  hover:opacity-100"
         }`}

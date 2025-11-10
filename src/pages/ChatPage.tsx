@@ -1,12 +1,14 @@
 import ChatContainer from "@/components/ChatContainer";
+import Loading from "@/components/Loading";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import ErrPage from "@/components/ui/errPage";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useUser } from "@/context/user";
-import PageLayout from "@/layout/PageLayout";
+import PageLayout from "@/layout/pageLayout";
 import type { ChatMessage, FirebaseUser } from "@/types/firebase";
 import { withProtected } from "@/utils/auth/use-protected";
 import getObjectValues from "@/utils/firebase/get-object-values";
@@ -17,10 +19,10 @@ import {
   useChatMessages,
 } from "@/utils/friends/use-chat";
 import useFriends from "@/utils/friends/use-friends";
-import { SendHorizonal, User } from "lucide-react";
+import { ChevronLeft, SendHorizonal, User } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import TextareaAutoSize from "react-textarea-autosize";
 
 type MessageInput = {
@@ -34,6 +36,8 @@ const Chat = () => {
   const { areFriends } = useFriends();
   const { register, handleSubmit, reset, watch } = useForm<MessageInput>();
   const chatEndRef = useRef<HTMLDivElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const navigate = useNavigate();
   const {
     data: friendProfile,
     isLoading: friendLoading,
@@ -81,16 +85,23 @@ const Chat = () => {
   };
 
   if (!chatId || isLoading || !chatList || friendLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (error || friendError) {
-    return <div>Something error...</div>;
+    return <ErrPage code={400} />;
   }
 
   return (
     <PageLayout>
-      <div className="w-full flex items-center gap-4 bg-white p-2">
+      <div className="w-full border-b flex items-center gap-4 bg-white p-2 absolute -top-px left-0">
+        <button
+          onClick={() => {
+            navigate("/friends");
+          }}
+        >
+          <ChevronLeft size={20} />
+        </button>
         <Avatar className="w-10 h-10">
           <AvatarImage src={(friendProfile as FirebaseUser).photoURL} />
           <AvatarFallback>
@@ -113,20 +124,22 @@ const Chat = () => {
         })}
         <div ref={chatEndRef} />
       </div>
-      <div className="w-full fixed bottom-0 right-0 grid place-items-center pb-18 px-4 bg-white pt-3">
+      <div className="w-full absolute bottom-0 right-0 grid place-items-center pb-18 px-4 bg-white pt-3">
         <form
           onSubmit={handleSubmit(handleSend)}
           className="w-full max-w-3xl relative"
         >
           <TextareaAutoSize
-            className="w-full text-sm px-4 py-2 bg-black/5 focus:outline-2 focus:outline-black/50 focus:rounded-lg font-jakarta focus:bg-[#DFDFDF]/25 resize-none hide-scroll rounded-full"
+            className={`w-full text-sm px-4 py-2 bg-black/5 focus:outline-2 focus:outline-black/50 font-jakarta focus:bg-[#DFDFDF]/25 resize-none hide-scroll transition-smooth ${
+              textareaRef.current?.clientHeight == 37
+                ? "rounded-full focus:rounded-xl"
+                : "rounded-xl"
+            }`}
             minRows={1}
-            maxRows={10}
+            maxRows={5}
             placeholder="Type a message"
             {...register("message", { required: true })}
-            style={{
-              transition: "all ease-in-out 200ms",
-            }}
+            ref={textareaRef}
           />
           <Tooltip>
             <TooltipTrigger

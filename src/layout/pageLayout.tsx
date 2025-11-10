@@ -7,6 +7,7 @@ interface PageLayoutProps {
   center?: boolean;
   scroll?: boolean;
   reqAnimation?: boolean;
+  hideScroll?: boolean;
 }
 
 const PageLayout = ({
@@ -15,6 +16,7 @@ const PageLayout = ({
   center = false,
   scroll = true,
   reqAnimation = false,
+  hideScroll = true,
 }: PageLayoutProps) => {
   return (
     <div className="w-full sm:px-10 px-0 max-h-svh min-h-dvh flex justify-center overflow-y-scroll">
@@ -24,11 +26,11 @@ const PageLayout = ({
         }`}
       >
         <section
-          className={`h-full mb-[62px] flex flex-col overflow-x-hidden hide-scroll ${
-            reqAnimation && "pop"
-          } ${center && "justify-center items-center w-full"} ${
-            scroll ? "overflow-y-scroll" : "overflow-y-hidden"
-          }`}
+          className={`h-full mb-[62px] flex flex-col py-3 overflow-x-hidden ${
+            hideScroll && "hide-scroll"
+          } ${reqAnimation && "pop"} ${
+            center && "justify-center items-center w-full"
+          } ${scroll ? "overflow-y-scroll" : "overflow-y-hidden"}`}
         >
           {children}
         </section>

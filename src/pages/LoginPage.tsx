@@ -50,7 +50,7 @@ const Login = () => {
           }
         }}
       >
-        <span>Sign in with Google</span>
+        <span>Sign in witah Google</span>
         <img
           src="https://www.gstatic.com/marketing-cms/assets/images/d5/dc/cfe9ce8b4425b410b49b7f2dd3f3/g.webp=s96-fcrop64=1,00000000ffffffff-rw"
           alt="google"
