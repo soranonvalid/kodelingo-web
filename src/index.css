@@ -13,6 +13,23 @@
   display: none;
 }
 
+.pop {
+  animation: pop 0.2s ease-in-out;
+}
+
+.transition-smooth {
+  transition: all 0.2s ease-in-out;
+}
+
+@keyframes pop {
+  from {
+    scale: 90%;
+  }
+  to {
+    scale: 100%;
+  }
+}
+
 :root {
   --font-jakarta: "Plus Jakarta Sans", sans-serif;
   --radius: 0.625rem;

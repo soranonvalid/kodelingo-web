@@ -9,12 +9,12 @@ import ChatPage from "./pages/ChatPage";
 function Route() {
   const router = createBrowserRouter([
     {
+      path: "*",
+      element: <NotFoundPage />,
+    },
+    {
       element: <AuthLayout />,
       children: [
-        {
-          path: "*",
-          element: <NotFoundPage />,
-        },
         {
           path: "/",
           element: <LandingPage />,
