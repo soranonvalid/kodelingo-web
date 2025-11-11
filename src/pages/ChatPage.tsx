@@ -99,6 +99,7 @@ const Chat = () => {
     <PageLayout>
       <div className="w-full border-b flex items-center gap-4 bg-white p-2 absolute -top-px left-0">
         <button
+          className="cursor-pointer"
           onClick={() => {
             navigate("/friends");
           }}
