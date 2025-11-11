@@ -4,6 +4,7 @@ import { ArrowRight, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import InfoCard from "@/components/ui/infoCard";
+import SectionHead from "@/components/ui/sectionHead";
 
 const user = {
   photoURL:
@@ -50,17 +51,8 @@ const LandingPage = () => {
           <InfoCard footer="Card 3">140</InfoCard>
           <InfoCard footer="Card 4">180</InfoCard>
         </section>
-        <section className="py-6 flex flex-col gap-4">
-          <div
-            onClick={() => {
-              navigate("/r");
-            }}
-            className="flex items-center gap-5 opacity-75 hover:opacity-100 transition-smooth cursor-pointer"
-          >
-            <h1 className="text-[1.2rem]">Profile</h1>
-            <ArrowRight strokeWidth={1.5} />
-          </div>
-          <div className="flex sm:flex-row flex-col gap-2 sm:gap-10 items-center">
+        <SectionHead title={"Profile"} fx={true} path="/r">
+          <div className="flex sm:flex-row flex-col gap-2 sm:gap-10 items-center w-full">
             <Avatar
               onClick={() => {
                 navigate("/r");
@@ -102,7 +94,10 @@ const LandingPage = () => {
               </div>
             </div>
           </div>
-        </section>
+        </SectionHead>
+        <SectionHead title={"Challenges"}>
+          <div className="">a</div>
+        </SectionHead>
       </main>
     </PageLayout>
   );
