@@ -8,7 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useUser } from "@/context/user";
-import PageLayout from "@/layout/PageLayout";
+import PageLayout from "@/layout/pageLayout";
 import type { ChatMessage, FirebaseUser } from "@/types/firebase";
 import { withProtected } from "@/utils/auth/use-protected";
 import getObjectValues from "@/utils/firebase/get-object-values";

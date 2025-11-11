@@ -1,4 +1,4 @@
-import PageLayout from "@/layout/PageLayout";
+import PageLayout from "@/layout/pageLayout";
 import { withProtected } from "@/utils/auth/use-protected";
 import { Plus } from "lucide-react";
 import {

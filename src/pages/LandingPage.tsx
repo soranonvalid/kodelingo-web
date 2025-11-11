@@ -4,6 +4,7 @@ import { ArrowRight, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import InfoCard from "@/components/ui/infoCard";
+
 const user = {
   photoURL:
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJJwZievtcRT0r69GUl5BYUPvxn66ZGJClig&s",
@@ -35,7 +36,6 @@ const renderLevel = (crntLVL: number, crntXP: number) => {
   const perXP = Math.round((crntXP / limitLVL) * 100);
   return { limitLVL, perXP, crntLVL, crntXP };
 };
-import PageLayout from "@/layout/PageLayout";
 
 const LandingPage = () => {
   const navigate = useNavigate();
