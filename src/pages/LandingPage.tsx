@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import InfoCard from "@/components/ui/infoCard";
 import SectionHead from "@/components/ui/sectionHead";
+import ChallengeCard from "@/components/ui/challengeCard";
 
 const user = {
   photoURL:
@@ -96,7 +97,14 @@ const LandingPage = () => {
           </div>
         </SectionHead>
         <SectionHead title={"Challenges"}>
-          <div className="">a</div>
+          <ChallengeCard
+            title="Learning JS"
+            date="20-11-2025"
+            lang="js"
+            src={user.photoURL}
+            user={user.displayName}
+            question={8}
+          />
         </SectionHead>
       </main>
     </PageLayout>
