@@ -19,7 +19,7 @@ const PageLayout = ({
   hideScroll = true,
 }: PageLayoutProps) => {
   return (
-    <div className="w-full sm:px-10 px-0 max-h-svh min-h-dvh flex justify-center overflow-y-scroll">
+    <div className="w-full sm:px-10 px-0 max-h-svh min-h-dvh flex justify-center overflow-y-scroll hide-scroll">
       <div
         className={`max-w-3xl w-full min-h-dvh h-full flex flex-col border border-x-black/10 border-y-black/0 absolute ${
           padding && "px-3"

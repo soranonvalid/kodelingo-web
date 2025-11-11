@@ -1,4 +1,4 @@
-import PageLayout from "@/layout/pageLayout";
+import PageLayout from "@/layout/PageLayout";
 
 const LandingPage = () => {
   return <PageLayout>Home</PageLayout>;

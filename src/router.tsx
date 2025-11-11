@@ -6,6 +6,7 @@ import TestChatPage from "./pages/TestChatPage";
 import LoginPage from "./pages/LoginPage";
 import FriendsListPage from "./pages/FriendsListPage";
 import ChatPage from "./pages/ChatPage";
+import ChallengesPage from "./pages/ChallengesPage";
 
 function Route() {
   const router = createBrowserRouter([
@@ -23,6 +24,10 @@ function Route() {
         {
           path: "/login",
           element: <LoginPage />,
+        },
+        {
+          path: "/challenges",
+          element: <ChallengesPage />,
         },
         {
           path: "/friends",
