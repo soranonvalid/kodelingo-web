@@ -1,0 +1,121 @@
+[
+  {
+    "id": "challenge_001",
+    "name": "JavaScript Basics",
+    "lang": "js",
+    "author": "B5HP1OzyFYOHTqTruIrPsNW7oFd2",
+    "createdAt": 1731300000000,
+    "updatedAt": 1731300000000,
+    "questions": [
+      {
+        "text": "Apa hasil dari kode berikut?\n\n```js\nconsole.log(2 + '2');\n```",
+        "type": "multiple choice",
+        "options": ["4", "'22'", "NaN", "Error"],
+        "answer": "'22'"
+      },
+      {
+        "text": "Apa hasil dari ekspresi berikut?\n\n```js\ntypeof NaN;\n```",
+        "type": "multiple choice",
+        "options": ["'number'", "'NaN'", "'undefined'", "'object'"],
+        "answer": "'number'"
+      },
+      {
+        "text": "Perbaiki kode berikut:\n\n```js\nconst obj = {name: 'John'};\nconsole.log(obj.namee);\n```",
+        "type": "essay",
+        "answer": "Typo pada properti. Harusnya `obj.name`, bukan `obj.namee`.\n\n```js\nconsole.log(obj.name);\n```"
+      },
+      {
+        "text": "Apa hasil dari kode berikut?\n\n```js\nconsole.log(1 == '1');\n```",
+        "type": "multiple choice",
+        "options": ["true", "false", "Error", "undefined"],
+        "answer": "true"
+      },
+      {
+        "text": "Perbaiki kode berikut agar bisa dijalankan:\n\n```js\nlet x = 10\nif x > 5 {\n  console.log('besar');\n}\n```",
+        "type": "essay",
+        "answer": "Gunakan tanda kurung setelah `if` dan titik koma di akhir baris:\n\n```js\nlet x = 10;\nif (x > 5) {\n  console.log('besar');\n}\n```"
+      }
+    ]
+  },
+  {
+    "id": "challenge_002",
+    "name": "Python Fundamentals",
+    "lang": "python",
+    "author": "OKYjxReryLRHMnmz4GXcU5pj3BD3",
+    "createdAt": 1731300000000,
+    "updatedAt": 1731300000000,
+    "questions": [
+      {
+        "text": "Apa hasil dari kode berikut?\n\n```python\nprint(2 ** 3)\n```",
+        "type": "multiple choice",
+        "options": ["5", "6", "8", "9"],
+        "answer": "8"
+      },
+      {
+        "text": "Apa hasil dari kode berikut?\n\n```python\nprint(type(None))\n```",
+        "type": "multiple choice",
+        "options": [
+          "<class 'NoneType'>",
+          "<class 'int'>",
+          "<class 'str'>",
+          "<class 'bool'>"
+        ],
+        "answer": "<class 'NoneType'>"
+      },
+      {
+        "text": "Perbaiki kode berikut:\n\n```python\nfor i in range(5)\nprint(i)\n```",
+        "type": "essay",
+        "answer": "Tambahkan titik dua setelah range(5) dan indentasi di dalam loop:\n\n```python\nfor i in range(5):\n    print(i)\n```"
+      },
+      {
+        "text": "Apa hasil dari kode berikut?\n\n```python\nx = [1, 2, 3]\nprint(x[3])\n```",
+        "type": "multiple choice",
+        "options": ["3", "IndexError", "None", "0"],
+        "answer": "IndexError"
+      },
+      {
+        "text": "Perbaiki kode berikut:\n\n```python\nif x = 10:\n    print('ok')\n```",
+        "type": "essay",
+        "answer": "Gunakan operator perbandingan `==` bukan `=`:\n\n```python\nif x == 10:\n    print('ok')\n```"
+      }
+    ]
+  },
+  {
+    "id": "challenge_003",
+    "name": "Intermediate JavaScript",
+    "lang": "js",
+    "author": "qMmtVXTdWuOKzGzfeUTJmlhh6353",
+    "createdAt": 1731300000000,
+    "updatedAt": 1731300000000,
+    "questions": [
+      {
+        "text": "Apa hasil dari kode berikut?\n\n```js\nconsole.log([] == ![]);\n```",
+        "type": "multiple choice",
+        "options": ["true", "false", "undefined", "TypeError"],
+        "answer": "true"
+      },
+      {
+        "text": "Apa hasil dari kode berikut?\n\n```js\nconsole.log([1, 2] + [3, 4]);\n```",
+        "type": "multiple choice",
+        "options": ["[1,2,3,4]", "'1,23,4'", "'1,23,4'", "'1,23,4'"],
+        "answer": "'1,23,4'"
+      },
+      {
+        "text": "Perbaiki kode berikut:\n\n```js\nlet arr = [1, 2, 3];\narr.pop(0);\n```",
+        "type": "essay",
+        "answer": "`pop()` menghapus elemen terakhir, bukan pertama. Gunakan `shift()`:\n\n```js\narr.shift();\n```"
+      },
+      {
+        "text": "Apa hasil dari kode berikut?\n\n```js\nconsole.log(typeof []);\n```",
+        "type": "multiple choice",
+        "options": ["'object'", "'array'", "'list'", "'undefined'"],
+        "answer": "'object'"
+      },
+      {
+        "text": "Perbaiki kode berikut:\n\n```js\nconst greet = name => {\n  return 'Hello' + name;\n}\nconsole.log(greet())\n```",
+        "type": "essay",
+        "answer": "Tambahkan parameter saat memanggil fungsi:\n\n```js\nconsole.log(greet('John'));\n```"
+      }
+    ]
+  }
+]

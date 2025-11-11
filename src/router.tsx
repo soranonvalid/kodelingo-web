@@ -7,43 +7,50 @@ import LoginPage from "./pages/LoginPage";
 import FriendsListPage from "./pages/FriendsListPage";
 import ChatPage from "./pages/ChatPage";
 import ChallengesPage from "./pages/ChallengesPage";
+import ClientLayout from "./layout/client/ClientLayout";
+
+const router = createBrowserRouter([
+  {
+    element: <AuthLayout />,
+    children: [
+      {
+        element: <ClientLayout />,
+        children: [
+          {
+            path: "*",
+            element: <NotFoundPage />,
+          },
+          {
+            path: "/",
+            element: <LandingPage />,
+          },
+          {
+            path: "/login",
+            element: <LoginPage />,
+          },
+          {
+            path: "/challenges",
+            element: <ChallengesPage />,
+          },
+          {
+            path: "/friends",
+            element: <FriendsListPage />,
+          },
+          {
+            path: "/test",
+            element: <TestChatPage />,
+          },
+          {
+            path: "/chat/:friendId",
+            element: <ChatPage />,
+          },
+        ],
+      },
+    ],
+  },
+]);
 
 function Route() {
-  const router = createBrowserRouter([
-    {
-      element: <AuthLayout />,
-      children: [
-        {
-          path: "*",
-          element: <NotFoundPage />,
-        },
-        {
-          path: "/",
-          element: <LandingPage />,
-        },
-        {
-          path: "/login",
-          element: <LoginPage />,
-        },
-        {
-          path: "/challenges",
-          element: <ChallengesPage />,
-        },
-        {
-          path: "/friends",
-          element: <FriendsListPage />,
-        },
-        {
-          path: "/test",
-          element: <TestChatPage />,
-        },
-        {
-          path: "/chat/:friendId",
-          element: <ChatPage />,
-        },
-      ],
-    },
-  ]);
   return <RouterProvider router={router} />;
 }
 

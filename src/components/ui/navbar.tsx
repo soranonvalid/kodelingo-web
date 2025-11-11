@@ -7,7 +7,7 @@ import {
   type LucideProps,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useWindowSize } from "@uidotdev/usehooks";
+import { useMediaQuery } from "react-responsive";
 
 type Item = {
   url: string;
@@ -54,7 +54,7 @@ const items: Item[] = [
 const Navbar = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { width, height } = useWindowSize();
+  const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
 
   const isActive = (item: Item) =>
     item.activePaths?.some((path) => {
@@ -77,10 +77,10 @@ const Navbar = () => {
             onClick={() => navigate(item.url)}
             className={`flex flex-col items-center gap-1 w-min transition-all cursor-pointer ${
               active ? "opacity-100" : "opacity-50 hover:opacity-100"
-            }`}
+            } ${isMobile ? "py-1" : ""}`}
           >
-            <Icon size={20} />
-            <p className="text-sm">{item.text}</p>
+            <Icon size={isMobile ? 20 : 17.5} />
+            <p className="text-sm">{isMobile ? null : item.text}</p>
           </div>
         );
       })}
