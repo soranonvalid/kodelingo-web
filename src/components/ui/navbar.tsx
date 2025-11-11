@@ -1,91 +1,49 @@
-import {
-  Badge,
-  House,
-  Settings,
-  User,
-  Users,
-  type LucideProps,
-} from "lucide-react";
+import { House, Settings, User, Users } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useWindowSize } from "@uidotdev/usehooks";
-
-type Item = {
-  url: string;
-  text: string;
-  icon: React.ForwardRefExoticComponent<
-    Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
-  >;
-  activePaths?: string[];
-};
-
-const items: Item[] = [
-  {
-    url: "/",
-    text: "Home",
-    icon: House,
-    activePaths: ["/"],
-  },
-  {
-    url: "/challenges",
-    text: "Challenges",
-    icon: Badge,
-    activePaths: ["/challenges"],
-  },
-  {
-    url: "/friends",
-    text: "Friends",
-    icon: Users,
-    activePaths: ["/friends", "/chat/:id"],
-  },
-  {
-    url: "/profile",
-    text: "Profile",
-    icon: User,
-    activePaths: ["/profile"],
-  },
-  {
-    url: "/settings",
-    text: "Settings",
-    icon: Settings,
-    activePaths: ["/settings"],
-  },
-];
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { width } = useWindowSize();
-
-  const isActive = (item: Item) =>
-    item.activePaths?.some((path) => {
-      if (path.includes(":")) {
-        const base = path.split("/:")[0];
-        return location.pathname.startsWith(base);
-      }
-      return location.pathname === path;
-    });
-
-  const isMobile = !!width && width <= 500;
-
   return (
-    <nav className="absolute bottom-0 border-t border-black/10 w-full left-0 flex items-center justify-around py-2 bg-white/80 backdrop-blur-md">
-      {items.map((item) => {
-        const Icon = item.icon;
-        const active = isActive(item);
-
-        return (
-          <div
-            key={item.url}
-            onClick={() => navigate(item.url)}
-            className={`flex flex-col items-center gap-1 w-min transition-all cursor-pointer ${
-              active ? "opacity-100" : "opacity-50 hover:opacity-100"
-            } ${isMobile ? "py-1" : ""}`}
-          >
-            <Icon size={isMobile ? 20 : 17.5} />
-            <p className="text-sm">{isMobile ? null : item.text}</p>
-          </div>
-        );
-      })}
+    <nav className="absolute bottom-0 border border-y-black/10 border-x-black/0 w-full left-0 flex items-center justify-around py-2 z">
+      <div
+        onClick={() => navigate("/")}
+        className={`flex flex-col items-center gap-1 w-min transition-smooth  cursor-pointer ${
+          location.pathname === "/" ? "" : "opacity-50  hover:opacity-100"
+        }`}
+      >
+        <House size={20} />
+        <p className="text-sm">Home</p>
+      </div>
+      <div
+        onClick={() => navigate("/friends")}
+        className={`flex flex-col items-center gap-1 w-min transition-smooth  cursor-pointer ${
+          location.pathname === "/friends" || location.pathname === "/chat/:id"
+            ? ""
+            : "opacity-50  hover:opacity-100"
+        }`}
+      >
+        <Users size={20} />
+        <p className="text-sm">Friends</p>
+      </div>
+      <div
+        onClick={() => navigate("/r")}
+        className={`flex flex-col items-center gap-1 w-min transition-smooth  cursor-pointer ${
+          location.pathname === "" ? "" : "opacity-50  hover:opacity-100"
+        }`}
+      >
+        <User size={20} />
+        <p className="text-sm">Profile</p>
+      </div>
+      <div
+        onClick={() => navigate("/r")}
+        className={`flex flex-col items-center gap-1 w-min transition-smooth  cursor-pointer ${
+          location.pathname === "" ? "" : "opacity-50  hover:opacity-100"
+        }`}
+      >
+        <Settings size={20} />
+        <p className="text-sm">Settings</p>
+      </div>
     </nav>
   );
 };
