@@ -3,6 +3,7 @@ import { User } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 import { SiJavascript } from "react-icons/si";
 import InfoCard from "./infoCard";
+import { Badge } from "./badge";
 
 interface props {
   title: string | number;
@@ -11,6 +12,7 @@ interface props {
   src: string;
   user: string;
   question: number;
+  difficulty?: string;
 }
 
 const ChallengeCard = ({
@@ -20,7 +22,23 @@ const ChallengeCard = ({
   user = "user",
   src,
   question,
+  difficulty = "easy",
 }: props) => {
+  const getDifficulty = (difficulty: string) => {
+    switch (difficulty) {
+      case "easy":
+        return "green";
+
+      case "intermediate":
+        return "orange";
+
+      case "difficult":
+        return "red";
+
+      default:
+        return "green";
+    }
+  };
   return (
     <InfoCard isPointer={true}>
       <div className="flex w-full justify-between items-start">
@@ -37,7 +55,7 @@ const ChallengeCard = ({
           </TooltipContent>
         </Tooltip>
       </div>
-      <div className="text-sm flex w-full items-end justify-between mt-5 gap-2">
+      <div className="text-sm flex w-full items-center justify-between mt-5 gap-2">
         <div className="flex items-center gap-2">
           <Avatar>
             <AvatarImage src={src} />
@@ -47,9 +65,17 @@ const ChallengeCard = ({
           </Avatar>
           <p>{user}</p>
         </div>
-        <span className="text-sm text-nowrap text-black/50">
-          {question} Questions
-        </span>
+        <div className="flex gap-3">
+          <Badge
+            variant={getDifficulty(difficulty)}
+            className="h-fit! px-1! py-0.2! font-bold rounded-sm"
+          >
+            {difficulty}
+          </Badge>
+          <span className="text-sm text-nowrap text-black/50">
+            {question} Questions
+          </span>
+        </div>
       </div>
     </InfoCard>
   );

@@ -28,9 +28,7 @@ const SectionHead = ({ children, fx = false, title, path }: props) => {
         <h1 className="text-[1.2rem]">{title}</h1>
         {path && <ArrowRight strokeWidth={1.5} />}
       </div>
-      <div className="flex sm:flex-row flex-col gap-2 sm:gap-10 items-center w-full">
-        {children}
-      </div>
+      <div>{children}</div>
     </section>
   );
 };

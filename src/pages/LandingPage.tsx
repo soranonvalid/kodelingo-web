@@ -96,15 +96,25 @@ const LandingPage = () => {
             </div>
           </div>
         </SectionHead>
-        <SectionHead title={"Challenges"}>
-          <ChallengeCard
-            title="Learning JS"
-            date="20-11-2025"
-            lang="js"
-            src={user.photoURL}
-            user={user.displayName}
-            question={8}
-          />
+        <SectionHead title={"Challenges"} fx={true} path="/challenges">
+          <div className="flex flex-col gap-3">
+            <ChallengeCard
+              title="Learning JS"
+              date="20-11-2025"
+              lang="js"
+              src={user.photoURL}
+              user={user.displayName}
+              question={8}
+            />
+            <ChallengeCard
+              title="Learning JS"
+              date="20-11-2025"
+              lang="js"
+              src={user.photoURL}
+              user={user.displayName}
+              question={8}
+            />
+          </div>
         </SectionHead>
       </main>
     </PageLayout>
