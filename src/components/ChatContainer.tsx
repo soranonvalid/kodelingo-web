@@ -16,7 +16,7 @@ const ChatContainer = ({
 
   return message.sender === friendId ? (
     <motion.div
-      className="w-fit bg-black/5 p-2 h-fit rounded-lg rounded-tl-none min-w-10 md:max-w-[75%] max-w-[90%] mr-auto"
+      className="w-fit bg-black/5 p-2 h-fit flex flex-col gap-2 rounded-lg rounded-tl-none min-w-10 md:max-w-[75%] max-w-[90%] mr-auto"
       initial={{
         y: 10,
         x: -5,
@@ -39,7 +39,7 @@ const ChatContainer = ({
     </motion.div>
   ) : (
     <motion.div
-      className="w-fit bg-black p-2 h-fit rounded-lg rounded-tr-none min-w-10 md:max-w-[75%] max-w-[90%] ml-auto"
+      className="w-fit bg-black p-2 h-fit flex flex-col gap-2 rounded-lg rounded-tr-none min-w-10 md:max-w-[75%] max-w-[90%] ml-auto"
       initial={{
         y: 10,
         x: 5,

@@ -199,14 +199,11 @@ const FriendsList = () => {
       <div className="w-full relative flex mt-2">
         <input
           type="text"
-          className="w-full text-sm px-4 py-3 bg-black/5 focus:outline-2 focus:outline-black/50 focus:rounded-sm font-jakarta focus:bg-[#DFDFDF]/25"
+          className="w-full text-sm px-4 py-3 bg-black/5 focus:outline-2 focus:outline-black/50 rounded-sm font-jakarta focus:bg-[#DFDFDF]/25"
           placeholder="Search or add user.."
           onChange={handleSearch}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          style={{
-            transition: "all ease-in-out 200ms",
-          }}
         />
         {isFocused && filteredUsers.length > 0 ? (
           <div

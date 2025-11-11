@@ -37,6 +37,9 @@ const Chat = () => {
   const { register, handleSubmit, reset, watch } = useForm<MessageInput>();
   const chatEndRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const { ref: registerRef, ...registerRest } = register("message", {
+    required: true,
+  });
   const navigate = useNavigate();
   const {
     data: friendProfile,
@@ -112,7 +115,7 @@ const Chat = () => {
           {(friendProfile as FirebaseUser).displayName}
         </p>
       </div>
-      <div className="w-full flex-col flex gap-1 pb-30 pt-7.5 max-h-[calc(100svh-100px)] overflow-y-scroll hide-scroll">
+      <div className="w-full flex-col flex gap-1 pb-30 pt-15 max-h-[calc(100svh-100px)] overflow-y-scroll hide-scroll">
         {chatList.map((message: ChatMessage, idx) => {
           return (
             <ChatContainer
@@ -131,23 +134,24 @@ const Chat = () => {
         >
           <TextareaAutoSize
             className={`w-full text-sm px-4 py-2 bg-black/5 focus:outline-2 focus:outline-black/50 font-jakarta focus:bg-[#DFDFDF]/25 resize-none hide-scroll transition-smooth ${
-              textareaRef.current?.clientHeight == 37
-                ? "rounded-full focus:rounded-xl"
+              (textareaRef.current?.clientHeight ?? 0) <= 37
+                ? "rounded-full focus:rounded-2xl"
                 : "rounded-xl"
             }`}
             minRows={1}
             maxRows={5}
             placeholder="Type a message"
-            {...register("message", { required: true })}
-            ref={textareaRef}
+            {...registerRest}
+            ref={(el) => {
+              textareaRef.current = el;
+              registerRef(el);
+            }}
           />
           <Tooltip>
             <TooltipTrigger
               asChild
-              className="absolute right-3 bottom-3"
-              style={{
-                display: watch("message") ? "" : "none",
-              }}
+              className="absolute right-3 bottom-2"
+              style={{ display: watch("message") ? "" : "none" }}
             >
               <button className="hover:cursor-pointer">
                 <SendHorizonal className="w-4.5" />
