@@ -6,6 +6,7 @@
     "author": "B5HP1OzyFYOHTqTruIrPsNW7oFd2",
     "createdAt": 1731300000000,
     "updatedAt": 1731300000000,
+    "difficulty": "easy",
     "questions": [
       {
         "text": "Apa hasil dari kode berikut?\n\n```js\nconsole.log(2 + '2');\n```",
@@ -44,6 +45,7 @@
     "author": "OKYjxReryLRHMnmz4GXcU5pj3BD3",
     "createdAt": 1731300000000,
     "updatedAt": 1731300000000,
+    "difficulty": "intermediate",
     "questions": [
       {
         "text": "Apa hasil dari kode berikut?\n\n```python\nprint(2 ** 3)\n```",
@@ -87,6 +89,7 @@
     "author": "qMmtVXTdWuOKzGzfeUTJmlhh6353",
     "createdAt": 1731300000000,
     "updatedAt": 1731300000000,
+    "difficulty": "difficult",
     "questions": [
       {
         "text": "Apa hasil dari kode berikut?\n\n```js\nconsole.log([] == ![]);\n```",

@@ -16,6 +16,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { FirebaseUser } from "@/types/firebase";
 import getObjectValues from "@/utils/firebase/get-object-values";
 import { SiJavascript } from "react-icons/si";
+import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 
 const Challenges = () => {
   const [searchValue, setSearchValue] = useState<string>("");
@@ -39,8 +41,8 @@ const Challenges = () => {
   } = useRealtimeValue("users");
 
   const usersArray = useMemo(() => {
-    if (!users) return [];
-    return getObjectValues(users as object);
+    if (!users || typeof users !== "object") return [];
+    return getObjectValues(users);
   }, [users]);
 
   const getProfile = (challenge: any) =>
@@ -53,6 +55,22 @@ const Challenges = () => {
       month: "long",
       year: "numeric",
     });
+  };
+
+  const getDifficulty = (difficulty: string) => {
+    switch (difficulty) {
+      case "easy":
+        return "green";
+
+      case "intermediate":
+        return "orange";
+
+      case "difficult":
+        return "red";
+
+      default:
+        return "green";
+    }
   };
 
   if (
@@ -102,9 +120,12 @@ const Challenges = () => {
           )
           .map((challenge) => {
             return (
-              <div
+              <motion.div
                 key={challenge.id}
-                className="w-full p-4 border border-black/10 rounded-xl"
+                whileHover={{
+                  scale: 1.01,
+                }}
+                className="w-full p-4 border border-black/10 rounded-xl hover:cursor-pointer"
                 style={{
                   background:
                     "linear-gradient(234.98deg, #FFFFFF 49.95%, #F4F4F4 99.56%)",
@@ -112,14 +133,24 @@ const Challenges = () => {
               >
                 <div className="flex w-full justify-between">
                   <div className="flex w-full flex-col">
-                    <p className="font-bold">{challenge.name}</p>
+                    <div className="flex gap-2 items-center">
+                      <p className="font-bold">{challenge.name}</p>
+                    </div>
                     <span className="text-[12px] text-black/50">
                       {formatDate(challenge.createdAt)}
                     </span>
                   </div>
-                  <span className="text-sm text-nowrap">
-                    Questions: {challenge.questions.length}
-                  </span>
+                  <div className="flex flex-col justify-end items-end gap-2">
+                    <span className="text-sm text-nowrap">
+                      Questions: {challenge.questions.length}
+                    </span>
+                    <Badge
+                      variant={getDifficulty(challenge.difficulty)}
+                      className="h-fit! px-1! py-0.2! font-bold rounded-sm"
+                    >
+                      {challenge.difficulty}
+                    </Badge>
+                  </div>
                 </div>
                 <div className="text-sm flex w-full justify-between mt-5 gap-2">
                   <div className="flex items-center gap-2">
@@ -133,14 +164,16 @@ const Challenges = () => {
                   </div>
                   <Tooltip>
                     <TooltipTrigger>
-                      <SiJavascript size={25} color="#EDE242" />
+                      <div className="bg-black h-6 w-6 grid place-items-center">
+                        <SiJavascript size={25} color="#EDE242" />
+                      </div>
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>Javascript</p>
                     </TooltipContent>
                   </Tooltip>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
       </div>
