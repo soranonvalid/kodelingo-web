@@ -3,7 +3,7 @@ import { getDatabase, ref, onValue, off } from "firebase/database";
 import { useEffect, useState } from "react";
 
 const useRealtimeValue = <T extends FirebaseValue = FirebaseValue>(
-  path: string
+  path?: string | null
 ): RealtimeValueResult<T> => {
   const [data, setData] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -11,10 +11,18 @@ const useRealtimeValue = <T extends FirebaseValue = FirebaseValue>(
   const [isEmpty, setIsEmpty] = useState(true);
 
   useEffect(() => {
+    if (!path) {
+      setIsLoading(false);
+      setData(null);
+      setIsEmpty(true);
+      return;
+    }
+
     const db = getDatabase();
     const dbRef = ref(db, path);
 
-    onValue(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const listener = onValue(
       dbRef,
       (snapshot) => {
         const value = snapshot.val();

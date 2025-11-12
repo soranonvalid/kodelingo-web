@@ -4,47 +4,40 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 import { SiJavascript } from "react-icons/si";
 import InfoCard from "./infoCard";
 import { Badge } from "./badge";
-
-interface props {
-  title: string | number;
-  date: string;
-  lang: string;
-  src: string;
-  user: string;
-  question: number;
-  difficulty?: string;
-}
+import type { Challenge } from "@/types/challenge";
+import type { FirebaseUser } from "@/types/firebase";
+import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { useChallenge } from "@/utils/challenges/use-challenge";
+import { firstLetterToUpperCase } from "@/lib/word";
 
 const ChallengeCard = ({
-  title = "Challenge",
-  date,
-  lang,
-  user = "user",
-  src,
-  question,
-  difficulty = "easy",
-}: props) => {
-  const getDifficulty = (difficulty: string) => {
-    switch (difficulty) {
-      case "easy":
-        return "green";
+  challenge,
+  usersArray,
+}: {
+  challenge: Challenge;
+  usersArray: FirebaseUser[];
+}) => {
+  const navigate = useNavigate();
 
-      case "intermediate":
-        return "orange";
+  const { formatDate, getDifficulty } = useChallenge();
 
-      case "difficult":
-        return "red";
+  const getProfile = useMemo(
+    () => usersArray.find((user) => user.uid === challenge.author),
+    [usersArray, challenge]
+  );
 
-      default:
-        return "green";
-    }
-  };
   return (
-    <InfoCard isPointer={true}>
+    <InfoCard
+      isPointer={true}
+      onClick={() => navigate("/challenges/" + challenge._id)}
+    >
       <div className="flex w-full justify-between items-start">
         <div className="flex w-full flex-col">
-          <p className="font-bold">{title}</p>
-          <span className="text-[12px] text-black/50">{date}</span>
+          <p className="font-bold">{challenge.name}</p>
+          <span className="text-[12px] text-black/50">
+            {formatDate(challenge.createdAt)}
+          </span>
         </div>
         <Tooltip>
           <TooltipTrigger>
@@ -58,22 +51,22 @@ const ChallengeCard = ({
       <div className="text-sm flex w-full items-center justify-between mt-5 gap-2">
         <div className="flex items-center gap-2">
           <Avatar>
-            <AvatarImage src={src} />
+            <AvatarImage src={getProfile?.photoURL} />
             <AvatarFallback>
               <User />
             </AvatarFallback>
           </Avatar>
-          <p>{user}</p>
+          <p>{getProfile?.displayName}</p>
         </div>
         <div className="flex gap-3">
           <Badge
-            variant={getDifficulty(difficulty)}
+            variant={getDifficulty(challenge.difficulty)}
             className="h-fit! px-1! py-0.2! font-bold rounded-sm"
           >
-            {difficulty}
+            {firstLetterToUpperCase(challenge.difficulty)}
           </Badge>
           <span className="text-sm text-nowrap text-black/50">
-            {question} Questions
+            {challenge.questions.length} Questions
           </span>
         </div>
       </div>

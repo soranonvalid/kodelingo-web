@@ -7,7 +7,6 @@ import {
   type LucideProps,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useMediaQuery } from "react-responsive";
 
 type Item = {
   url: string;
@@ -29,7 +28,7 @@ const items: Item[] = [
     url: "/challenges",
     text: "Challenges",
     icon: Badge,
-    activePaths: ["/challenges"],
+    activePaths: ["/challenges", "/challenges/:id"],
   },
   {
     url: "/friends",
@@ -54,7 +53,6 @@ const items: Item[] = [
 const Navbar = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
 
   const isActive = (item: Item) =>
     item.activePaths?.some((path) => {
@@ -75,12 +73,12 @@ const Navbar = () => {
           <div
             key={item.url}
             onClick={() => navigate(item.url)}
-            className={`flex flex-col items-center gap-1 w-min transition-all cursor-pointer ${
+            className={`flex flex-col items-center gap-1 w-min transition-all cursor-pointer md:py-0 py-1 ${
               active ? "opacity-100" : "opacity-50 hover:opacity-100"
-            } ${isMobile ? "py-1" : ""}`}
+            }`}
           >
-            <Icon size={isMobile ? 20 : 17.5} />
-            <p className="text-sm">{isMobile ? null : item.text}</p>
+            <Icon className="md:w-[17.5px] md:h-[17.5px] w-5 h-5" />
+            <p className="text-sm md:flex hidden">{item.text}</p>
           </div>
         );
       })}
