@@ -1,11 +1,20 @@
 import PageLayout from "@/layout/pageLayout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowRight, User } from "lucide-react";
+import { User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import InfoCard from "@/components/ui/infoCard";
 import SectionHead from "@/components/ui/sectionHead";
 import ChallengeCard from "@/components/ui/challengeCard";
+import getObjectValues from "@/utils/firebase/get-object-values";
+import { useMemo } from "react";
+import useRealtimeValue from "@/utils/firebase/use-realtime-value";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "@/components/Loading";
+import ErrPage from "@/components/ui/errPage";
+import sudah from "@/data/challengeSudah.json";
+import type { Challenge } from "@/types/challenge";
+import { mongo } from "@/utils/mongo/api";
 
 const user = {
   photoURL:
@@ -42,7 +51,37 @@ const renderLevel = (crntLVL: number, crntXP: number) => {
 const LandingPage = () => {
   const navigate = useNavigate();
   const level = renderLevel(user.level.current, user.level.xp);
-  console.log(level);
+  const {
+    data: challenges,
+    isLoading: challengesLoading,
+    error: challengesError,
+  } = useQuery({
+    queryKey: ["challenges"],
+    queryFn: async () => {
+      const res = await mongo.get("/challenges/");
+      return res.data;
+    },
+  });
+
+  const {
+    data: users,
+    isLoading: usersLoading,
+    error: usersError,
+  } = useRealtimeValue("users");
+
+  const usersArray = useMemo(() => {
+    if (!users || typeof users !== "object") return [];
+    return getObjectValues(users);
+  }, [users]);
+
+  if (challengesLoading || usersLoading || !users || !challenges) {
+    return <Loading />;
+  }
+
+  if (challengesError || usersError) {
+    return <ErrPage code={400} />;
+  }
+
   return (
     <PageLayout>
       <main>
@@ -90,7 +129,7 @@ const LandingPage = () => {
                     }}
                     style={{ width: `${level.perXP}%` }}
                     className={`bg-amber-400 h-full`}
-                  ></motion.div>
+                  />
                 </div>
               </div>
             </div>
@@ -98,22 +137,17 @@ const LandingPage = () => {
         </SectionHead>
         <SectionHead title={"Challenges"} fx={true} path="/challenges">
           <div className="flex flex-col gap-3">
-            <ChallengeCard
-              title="Learning JS"
-              date="20-11-2025"
-              lang="js"
-              src={user.photoURL}
-              user={user.displayName}
-              question={8}
-            />
-            <ChallengeCard
-              title="Learning JS"
-              date="20-11-2025"
-              lang="js"
-              src={user.photoURL}
-              user={user.displayName}
-              question={8}
-            />
+            {(challenges as Challenge[])
+              .filter((challenge) =>
+                sudah.some((item) => item.idChallenge === challenge._id)
+              )
+              .map((challenge) => (
+                <ChallengeCard
+                  key={challenge._id}
+                  challenge={challenge}
+                  usersArray={usersArray}
+                />
+              ))}
           </div>
         </SectionHead>
       </main>

@@ -8,6 +8,8 @@ import FriendsListPage from "./pages/FriendsListPage";
 import ChatPage from "./pages/ChatPage";
 import ChallengesPage from "./pages/ChallengesPage";
 import ClientLayout from "./layout/client/ClientLayout";
+import ChallengeDetailsPage from "./pages/ChallengeDetailsPage";
+import PlayPage from "./pages/PlayPage";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +33,14 @@ const router = createBrowserRouter([
           {
             path: "/challenges",
             element: <ChallengesPage />,
+          },
+          {
+            path: "/challenges/:id",
+            element: <ChallengeDetailsPage />,
+          },
+          {
+            path: "/challenges/play/:id",
+            element: <PlayPage />,
           },
           {
             path: "/friends",

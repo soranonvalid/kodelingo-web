@@ -2,10 +2,8 @@
   {
     "id": "challenge_001",
     "name": "JavaScript Basics",
-    "lang": "js",
+    "lang": "javascript",
     "author": "B5HP1OzyFYOHTqTruIrPsNW7oFd2",
-    "createdAt": 1731300000000,
-    "updatedAt": 1731300000000,
     "difficulty": "easy",
     "questions": [
       {
@@ -39,12 +37,9 @@
     ]
   },
   {
-    "id": "challenge_002",
     "name": "Python Fundamentals",
     "lang": "python",
     "author": "OKYjxReryLRHMnmz4GXcU5pj3BD3",
-    "createdAt": 1731300000000,
-    "updatedAt": 1731300000000,
     "difficulty": "intermediate",
     "questions": [
       {
@@ -83,12 +78,9 @@
     ]
   },
   {
-    "id": "challenge_003",
     "name": "Intermediate JavaScript",
-    "lang": "js",
+    "lang": "javascript",
     "author": "qMmtVXTdWuOKzGzfeUTJmlhh6353",
-    "createdAt": 1731300000000,
-    "updatedAt": 1731300000000,
     "difficulty": "difficult",
     "questions": [
       {

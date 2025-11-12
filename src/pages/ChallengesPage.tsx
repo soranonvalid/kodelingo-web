@@ -1,23 +1,21 @@
 import PageLayout from "@/layout/pageLayout";
 import { withProtected } from "@/utils/auth/use-protected";
-import { Plus, User } from "lucide-react";
+import { Plus } from "lucide-react";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import demo from "@/data/demo.json";
 import Loading from "@/components/Loading";
 import ErrPage from "@/components/ui/errPage";
 import useRealtimeValue from "@/utils/firebase/use-realtime-value";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import type { FirebaseUser } from "@/types/firebase";
 import getObjectValues from "@/utils/firebase/get-object-values";
-import { SiJavascript } from "react-icons/si";
-import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
+import ChallengeCard from "@/components/ui/challengeCard";
+import type { Challenge } from "@/types/challenge";
+import sudah from "@/data/challengeSudah.json";
+import { mongo } from "@/utils/mongo/api";
 
 const Challenges = () => {
   const [searchValue, setSearchValue] = useState<string>("");
@@ -29,8 +27,8 @@ const Challenges = () => {
   } = useQuery({
     queryKey: ["challenges"],
     queryFn: async () => {
-      const res = demo;
-      return res;
+      const res = await mongo.get<Challenge[]>("/challenges");
+      return res.data;
     },
   });
 
@@ -45,33 +43,9 @@ const Challenges = () => {
     return getObjectValues(users);
   }, [users]);
 
-  const getProfile = (challenge: any) =>
-    usersArray.find((user: FirebaseUser) => user.uid === challenge.author);
-
-  const formatDate = (date: string | number | Date) => {
-    const d = new Date(date);
-    return d.toLocaleString("id-ID", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    });
-  };
-
-  const getDifficulty = (difficulty: string) => {
-    switch (difficulty) {
-      case "easy":
-        return "green";
-
-      case "intermediate":
-        return "orange";
-
-      case "difficult":
-        return "red";
-
-      default:
-        return "green";
-    }
-  };
+  useEffect(() => {
+    console.log(challenges);
+  }, [challenges, challengesLoading]);
 
   if (
     challengesLoading ||
@@ -114,66 +88,17 @@ const Challenges = () => {
       <div className="w-full flex flex-col gap-3 pt-4">
         {challenges
           .filter(
-            (challenge) =>
+            (challenge: Challenge) =>
+              !sudah.some((item) => item.idChallenge === challenge._id)
+          )
+          .filter(
+            (challenge: Challenge) =>
               searchValue.trim() === "" ||
               challenge.name.toLowerCase().includes(searchValue.toLowerCase())
           )
-          .map((challenge) => {
+          .map((challenge: Challenge) => {
             return (
-              <motion.div
-                key={challenge.id}
-                whileHover={{
-                  scale: 1.01,
-                }}
-                className="w-full p-4 border border-black/10 rounded-xl hover:cursor-pointer"
-                style={{
-                  background:
-                    "linear-gradient(234.98deg, #FFFFFF 49.95%, #F4F4F4 99.56%)",
-                }}
-              >
-                <div className="flex w-full justify-between">
-                  <div className="flex w-full flex-col">
-                    <div className="flex gap-2 items-center">
-                      <p className="font-bold">{challenge.name}</p>
-                    </div>
-                    <span className="text-[12px] text-black/50">
-                      {formatDate(challenge.createdAt)}
-                    </span>
-                  </div>
-                  <div className="flex flex-col justify-end items-end gap-2">
-                    <span className="text-sm text-nowrap">
-                      Questions: {challenge.questions.length}
-                    </span>
-                    <Badge
-                      variant={getDifficulty(challenge.difficulty)}
-                      className="h-fit! px-1! py-0.2! font-bold rounded-sm"
-                    >
-                      {challenge.difficulty}
-                    </Badge>
-                  </div>
-                </div>
-                <div className="text-sm flex w-full justify-between mt-5 gap-2">
-                  <div className="flex items-center gap-2">
-                    <Avatar>
-                      <AvatarImage src={getProfile(challenge).photoURL} />
-                      <AvatarFallback>
-                        <User />
-                      </AvatarFallback>
-                    </Avatar>
-                    <p>{getProfile(challenge).displayName}</p>
-                  </div>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <div className="bg-black h-6 w-6 grid place-items-center">
-                        <SiJavascript size={25} color="#EDE242" />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Javascript</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
-              </motion.div>
+              <ChallengeCard challenge={challenge} usersArray={usersArray} />
             );
           })}
       </div>
