@@ -8,6 +8,7 @@ import FriendsListPage from "./pages/FriendsListPage";
 import ChatPage from "./pages/ChatPage";
 import ChallengesPage from "./pages/ChallengesPage";
 import ClientLayout from "./layout/client/ClientLayout";
+import ProfilePage from "./pages/profilePage";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
           {
             path: "/chat/:friendId",
             element: <ChatPage />,
+          },
+          {
+            path: "/profile",
+            element: <ProfilePage />,
           },
         ],
       },
