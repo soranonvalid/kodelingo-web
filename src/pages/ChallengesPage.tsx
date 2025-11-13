@@ -16,8 +16,10 @@ import ChallengeCard from "@/components/ui/challengeCard";
 import type { Challenge } from "@/types/challenge";
 import sudah from "@/data/challengeSudah.json";
 import { mongo } from "@/utils/mongo/api";
+import { useNavigate } from "react-router-dom";
 
 const Challenges = () => {
+  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<string>("");
 
   const {
@@ -65,16 +67,22 @@ const Challenges = () => {
     <PageLayout>
       <div className="flex justify-between items-center">
         <h1 className="font-bold">Challenges</h1>
-        <Tooltip>
-          <TooltipTrigger asChild className="hover:cursor-pointer px-3">
-            <button className="relative">
-              <Plus className="w-4.5" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Create challenge</p>
-          </TooltipContent>
-        </Tooltip>
+        <button
+          onClick={() => {
+            navigate("/challenges/create");
+          }}
+        >
+          <Tooltip>
+            <TooltipTrigger asChild className="hover:cursor-pointer px-3">
+              <button className="relative">
+                <Plus className="w-4.5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Create challenge</p>
+            </TooltipContent>
+          </Tooltip>
+        </button>
       </div>
       <div className="w-full mt-2">
         <input

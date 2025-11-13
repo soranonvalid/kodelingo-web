@@ -1,12 +1,10 @@
-import React from "react";
-
-const ScoreBadge = () => {
+const ScoreBadge = (score: number) => {
   return (
     <div className="bg-black/5 w-min flex gap-2 items-center text-sm rounded-full px-3 py-1">
-      {getStatusBadge(rank)}
+      {null}
       <p>
         <span className="font-bold">#</span>
-        {rank}
+        {score}
       </p>
     </div>
   );
