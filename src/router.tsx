@@ -11,6 +11,7 @@ import ClientLayout from "./layout/client/ClientLayout";
 import ChallengeDetailsPage from "./pages/ChallengeDetailsPage";
 import PlayPage from "./pages/PlayPage";
 import ProfilePage from "./pages/profilePage";
+import NavbarLayout from "./layout/navbar/NavbarLayout";
 
 const router = createBrowserRouter([
   {
@@ -20,44 +21,49 @@ const router = createBrowserRouter([
         element: <ClientLayout />,
         children: [
           {
-            path: "*",
-            element: <NotFoundPage />,
-          },
-          {
-            path: "/",
-            element: <LandingPage />,
-          },
-          {
-            path: "/login",
-            element: <LoginPage />,
-          },
-          {
-            path: "/challenges",
-            element: <ChallengesPage />,
-          },
-          {
-            path: "/challenges/:id",
-            element: <ChallengeDetailsPage />,
-          },
-          {
-            path: "/challenges/play/:id",
-            element: <PlayPage />,
-          },
-          {
-            path: "/friends",
-            element: <FriendsListPage />,
-          },
-          {
-            path: "/test",
-            element: <TestChatPage />,
-          },
-          {
-            path: "/chat/:friendId",
-            element: <ChatPage />,
-          },
-          {
-            path: "/profile",
-            element: <ProfilePage />,
+            element: <NavbarLayout />,
+            children: [
+              {
+                path: "*",
+                element: <NotFoundPage />,
+              },
+              {
+                path: "/",
+                element: <LandingPage />,
+              },
+              {
+                path: "/login",
+                element: <LoginPage />,
+              },
+              {
+                path: "/challenges",
+                element: <ChallengesPage />,
+              },
+              {
+                path: "/challenges/:id",
+                element: <ChallengeDetailsPage />,
+              },
+              {
+                path: "/challenges/play/:id",
+                element: <PlayPage />,
+              },
+              {
+                path: "/friends",
+                element: <FriendsListPage />,
+              },
+              {
+                path: "/test",
+                element: <TestChatPage />,
+              },
+              {
+                path: "/chat/:friendId",
+                element: <ChatPage />,
+              },
+              {
+                path: "/profile",
+                element: <ProfilePage />,
+              },
+            ],
           },
         ],
       },

@@ -96,7 +96,7 @@ const Chat = () => {
   }
 
   return (
-    <PageLayout>
+    <PageLayout backgroundColor="#FAFAFC">
       <div className="w-full border-b flex items-center gap-4 bg-white p-2 absolute -top-px left-0">
         <button
           className="cursor-pointer"
@@ -146,6 +146,12 @@ const Chat = () => {
             ref={(el) => {
               textareaRef.current = el;
               registerRef(el);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmit(handleSend)();
+              }
             }}
           />
           <Tooltip>
