@@ -11,6 +11,7 @@ import ClientLayout from "./layout/client/ClientLayout";
 import ChallengeDetailsPage from "./pages/ChallengeDetailsPage";
 import PlayPage from "./pages/PlayPage";
 import ProfilePage from "./pages/profilePage";
+import ChallengesCreatePage from "./pages/challengesCreatePage";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,13 @@ const router = createBrowserRouter([
           {
             path: "/challenges/play/:id",
             element: <PlayPage />,
+          },
+          {
+            path: "/challenges/create",
+            element: <ChallengesCreatePage />,
+          },
+          {
+            path: "challenges/update/:id",
           },
           {
             path: "/friends",

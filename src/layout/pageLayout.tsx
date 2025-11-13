@@ -22,7 +22,9 @@ const PageLayout = ({
   return (
     <div
       {...rest}
-      className="w-full sm:px-10 px-0 max-h-svh min-h-dvh flex justify-center overflow-y-scroll hide-scroll"
+      className={`w-full sm:px-10 px-0 max-h-svh min-h-dvh flex justify-center  hide-scroll ${
+        scroll ? "overflow-y-scroll" : "overflow-y-hidden"
+      }`}
     >
       <div
         className={`max-w-3xl w-full min-h-dvh h-full flex flex-col border border-x-black/10 border-y-black/0 absolute ${
