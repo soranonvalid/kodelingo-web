@@ -1,7 +1,7 @@
 import Loading from "@/components/Loading";
 import ErrPage from "@/components/ui/errPage";
 import PageLayout from "@/layout/pageLayout";
-import type { Challenge } from "@/types/challenge";
+import type { Challenge, LeaderboardEntry } from "@/types/challenge";
 import { withProtected } from "@/utils/auth/use-protected";
 import { mongo } from "@/utils/mongo/api";
 import { useQuery } from "@tanstack/react-query";
@@ -60,13 +60,13 @@ const Play = () => {
     data: challengeLeaderboard,
     isLoading: challengeLeaderboardLoading,
     error: challengeLeaderboardError,
-  } = useRealtimeValue(`challenges/leaderboard/${id}`);
+  } = useRealtimeValue<LeaderboardEntry>(`challenges/leaderboard/${id}`);
 
   const {
     data: leaderboard,
     isLoading: leaderboardLoading,
     error: leaderboardError,
-  } = useRealtimeValue("leaderboard");
+  } = useRealtimeValue<LeaderboardEntry>("leaderboard");
 
   const currentQuestion = useMemo(() => {
     if (!challenge) return null;
@@ -93,7 +93,8 @@ const Play = () => {
     !profile ||
     profileError ||
     challengeLeaderboardError ||
-    leaderboardError
+    leaderboardError ||
+    !id
   )
     return <ErrPage code={500} />;
 
@@ -128,7 +129,7 @@ const Play = () => {
           profile={profile}
           challengeLeaderboard={challengeLeaderboard}
           leaderboard={leaderboard}
-          challengeId={id as string}
+          challengeId={id}
         />
       </PageLayout>
     );

@@ -3,18 +3,13 @@ import { motion } from "framer-motion";
 import { AnimatedScore } from "./ui/animatedScore";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Medal, User } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { GiPodium } from "react-icons/gi";
-import getObjectValues from "@/utils/firebase/get-object-values";
-import useCreateValue from "@/utils/firebase/use-create-value";
 import { useUser } from "@/context/user";
-import { getDatabase, ref, onValue, set } from "firebase/database";
-
-type LeaderboardEntry = {
-  uid: string;
-  score: number;
-  [k: string]: any;
-};
+import { useLeaderboardArrays } from "@/utils/leaderboard/use-leaderboard-arrays";
+import type { LeaderboardEntry } from "@/types/challenge";
+import { useChallengeCompletion } from "@/utils/leaderboard/use-challenge-completion";
+import { useSubmitChallengeScore } from "@/utils/leaderboard/use-submit-challenge-score";
 
 const ResultContainer = ({
   correctsAnswer,
@@ -27,55 +22,30 @@ const ResultContainer = ({
   correctsAnswer: number;
   questionsLength: number;
   profile: FirebaseUser;
-  challengeLeaderboard: Record<string, any> | null;
-  leaderboard: Record<string, any> | null;
+  challengeLeaderboard: LeaderboardEntry | null;
+  leaderboard: LeaderboardEntry | null;
   challengeId: string;
 }) => {
-  const db = getDatabase();
-  const [totalScore, setTotalScore] = useState(0);
-  const { setValue } = useCreateValue();
   const { uid } = useUser();
-  const [alreadyCompleted, setAlreadyCompleted] = useState<boolean | null>(null);
+  const [totalScore, setTotalScore] = useState(0);
 
-  const leaderboardArray = useMemo<LeaderboardEntry[]>(() => {
-    if (!leaderboard) return [];
-    return getObjectValues(leaderboard) as LeaderboardEntry[];
-  }, [leaderboard]);
+  const {
+    leaderboardArray,
+    challengeArray,
+    userChallengeEntry,
+    userGlobalEntry,
+    globalRank,
+    challengeRank,
+  } = useLeaderboardArrays(leaderboard, challengeLeaderboard, uid);
 
-  const challengeArray = useMemo<LeaderboardEntry[]>(() => {
-    if (!challengeLeaderboard) return [];
-    return getObjectValues(challengeLeaderboard) as LeaderboardEntry[];
-  }, [challengeLeaderboard]);
+  const alreadyCompleted = useChallengeCompletion(uid, challengeId);
 
-  const userGlobalEntry = useMemo(() => {
-    if (!uid || !leaderboardArray.length) return null;
-    return leaderboardArray.find((a) => a.uid === uid) || null;
-  }, [uid, leaderboardArray]);
-
-  const userChallengeEntry = useMemo(() => {
-    if (!uid || !challengeArray.length) return null;
-    return challengeArray.find((a) => a.uid === uid) || null;
-  }, [uid, challengeArray]);
-
-  const globalRank = useMemo(() => {
-    if (!leaderboardArray.length) return null;
-    const sorted = [...leaderboardArray].sort((a, b) => b.score - a.score);
-    return sorted.findIndex((u) => u.uid === uid) + 1;
-  }, [leaderboardArray, uid]);
-
-  const challengeRank = useMemo(() => {
-    if (!challengeArray.length) return null;
-    const sorted = [...challengeArray].sort((a, b) => b.score - a.score);
-    return sorted.findIndex((u) => u.uid === uid) + 1;
-  }, [challengeArray, uid]);
-
-  useEffect(() => {
-    if (!uid) return;
-    const compRef = ref(db, `challengeResults/${uid}/${challengeId}`);
-    onValue(compRef, (snap) => {
-      setAlreadyCompleted(snap.exists());
-    });
-  }, [uid, challengeId, db]);
+  const submitScore = useSubmitChallengeScore(
+    uid,
+    challengeId,
+    userGlobalEntry,
+    userChallengeEntry
+  );
 
   useEffect(() => {
     if (alreadyCompleted === null) return;
@@ -90,21 +60,7 @@ const ResultContainer = ({
     }
 
     console.log("[UPDATE] First time completion — updating score...");
-
-    set(ref(db, `challengeResults/${uid}/${challengeId}`), {
-      score: attemptScore,
-      finishedAt: Date.now(),
-    });
-
-    const newGlobalScore = (userGlobalEntry?.score || 0) + attemptScore;
-    setValue(`leaderboard/${uid}`, { uid, score: newGlobalScore });
-
-    const newChallengeScore = (userChallengeEntry?.score || 0) + attemptScore;
-    setValue(`challenges/leaderboard/${challengeId}/${uid}`, {
-      uid,
-      score: newChallengeScore,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    submitScore(attemptScore);
   }, [alreadyCompleted]);
 
   return (
@@ -113,7 +69,9 @@ const ResultContainer = ({
         <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }}>
           <Avatar className="w-30 h-30 border">
             <AvatarImage src={profile.photoURL} />
-            <AvatarFallback><User /></AvatarFallback>
+            <AvatarFallback>
+              <User />
+            </AvatarFallback>
           </Avatar>
         </motion.div>
       </div>
@@ -156,14 +114,18 @@ const ResultContainer = ({
 
       <div className="flex md:gap-10 md:flex-row flex-col gap-4 mt-6">
         <div className="flex flex-col items-center">
-          <span className="text-3xl">{globalRank ?? "-"} / {leaderboardArray.length || 1}</span>
+          <span className="text-3xl">
+            {globalRank ?? "-"} / {leaderboardArray.length || 1}
+          </span>
           <p className="text-black/50 flex text-sm gap-1 items-center">
             <GiPodium className="w-5" /> Current global rank
           </p>
         </div>
 
         <div className="flex flex-col items-center">
-          <span className="text-3xl">{challengeRank ?? "-"} / {challengeArray.length || 1}</span>
+          <span className="text-3xl">
+            {challengeRank ?? "-"} / {challengeArray.length || 1}
+          </span>
           <p className="text-black/50 flex text-sm gap-1 items-center">
             <Medal className="w-4" /> Current challenge rank
           </p>

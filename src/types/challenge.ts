@@ -26,3 +26,11 @@ export interface Challenge {
   difficulty: ChallengeDifficulty;
   questions: Question[];
 }
+
+export type LeaderboardEntry = {
+  uid: string;
+  score: number;
+  finishedAt: Date;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [k: string]: any;
+};
