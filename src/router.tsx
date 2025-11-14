@@ -13,6 +13,7 @@ import PlayPage from "./pages/PlayPage";
 import ProfilePage from "./pages/profilePage";
 import ChallengesCreatePage from "./pages/challengesCreatePage";
 import NavbarLayout from "./layout/navbar/NavbarLayout";
+import LeaderboardPage from "./pages/LeaderboardPage";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
               },
               {
                 path: "challenges/update/:id",
+              },
+              {
+                path: "leaderboard",
+                element: <LeaderboardPage />,
               },
               {
                 path: "/friends",

@@ -21,8 +21,7 @@ const useRealtimeValue = <T extends FirebaseValue = FirebaseValue>(
     const db = getDatabase();
     const dbRef = ref(db, path);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const listener = onValue(
+    onValue(
       dbRef,
       (snapshot) => {
         const value = snapshot.val();

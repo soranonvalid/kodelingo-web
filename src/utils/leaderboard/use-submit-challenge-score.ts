@@ -24,7 +24,6 @@ export const useSubmitChallengeScore = (
     setValue(`leaderboard/${uid}`, {
       uid,
       score: newGlobal,
-      finishedAt: Date.now(),
     });
 
     const newChallenge = (userChallengeEntry?.score || 0) + score;

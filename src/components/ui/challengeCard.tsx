@@ -1,7 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { User } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
-import { SiJavascript } from "react-icons/si";
 import InfoCard from "./infoCard";
 import { Badge } from "./badge";
 import type { Challenge } from "@/types/challenge";

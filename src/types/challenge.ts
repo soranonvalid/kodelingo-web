@@ -30,7 +30,7 @@ export interface Challenge {
 export type LeaderboardEntry = {
   uid: string;
   score: number;
-  finishedAt: Date;
+  finishedAt?: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [k: string]: any;
 };

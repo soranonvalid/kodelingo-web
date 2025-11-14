@@ -8,14 +8,12 @@ import useRealtimeValue from "@/utils/firebase/use-realtime-value";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Calendar,
-  Check,
   Code,
   Play,
   SignalHigh,
   Star,
   Trash2Icon,
   User,
-  X,
 } from "lucide-react";
 import type { FirebaseUser } from "@/types/firebase";
 import { Badge } from "@/components/ui/badge";
@@ -36,33 +34,8 @@ import sudah from "@/data/challengeSudah.json";
 import { mongo } from "@/utils/mongo/api";
 import { getLangIco } from "@/utils/renderUtils";
 import { useUser } from "@/context/user";
-
-const ranks = [
-  {
-    uid: "qMmtVXTdWuOKzGzfeUTJmlhh6353",
-    score: 100,
-  },
-  {
-    uid: "OKYjxReryLRHMnmz4GXcU5pj3BD3",
-    score: 100,
-  },
-  {
-    uid: "B5HP1OzyFYOHTqTruIrPsNW7oFd2",
-    score: 75,
-  },
-  {
-    uid: "jGEZEFxqo7eNhXJota2SFkd5bYs1",
-    score: 60,
-  },
-  {
-    uid: "jGEZEFxqo7eNhXJota2SFkd5bYs1",
-    score: 60,
-  },
-  {
-    uid: "jGEZEFxqo7eNhXJota2SFkd5bYs1",
-    score: 60,
-  },
-];
+import { useLeaderboardArrays } from "@/utils/leaderboard/use-leaderboard-arrays";
+import type { LeaderboardEntry } from "@/types/challenge";
 
 const ChallengeDetails = () => {
   const { id } = useParams();
@@ -90,18 +63,25 @@ const ChallengeDetails = () => {
 
   const { getDifficulty, formatDate } = useChallenge();
 
-  const sortedRanks = [...ranks].sort((a, b) => b.score - a.score);
-
   const {
     data: users,
     isLoading: usersLoading,
     error: usersError,
   } = useRealtimeValue("users");
 
+  const { data: sudahData, isLoading: sudahDataLoading } =
+    useRealtimeValue<LeaderboardEntry>(`challengeResults/${uid}/${id}`);
+
   const usersArray: FirebaseUser[] = useMemo(() => {
     if (!users || typeof users !== "object") return [];
     return getObjectValues(users);
   }, [users]);
+
+  const { data, isLoading, error } = useRealtimeValue<LeaderboardEntry>(
+    "challenges/leaderboard/" + id
+  );
+
+  const { challengeArray } = useLeaderboardArrays(null, data);
 
   const getOrdinalSuffix = (num: number): string => {
     const tens = num % 100;
@@ -127,16 +107,16 @@ const ChallengeDetails = () => {
     !challenge ||
     profileLoading ||
     !profile ||
-    usersLoading
+    usersLoading ||
+    isLoading ||
+    sudahDataLoading
   ) {
     return <Loading />;
   }
 
-  if (challengeError || profileError || usersError) {
+  if (challengeError || profileError || usersError || error) {
     return <ErrPage code={500} />;
   }
-
-  const sudahData = sudah.find((s) => s.idChallenge === challenge._id);
 
   const infoItems = {
     details: [
@@ -188,33 +168,13 @@ const ChallengeDetails = () => {
           {
             icon: <Star className="w-4.5 h-4.5" />,
             label: "Score",
-            content: (
-              <p className="text-sm">
-                {Math.floor(
-                  (sudahData.stats.correct /
-                    (sudahData.stats.wrong + sudahData.stats.correct)) *
-                    100
-                )}
-              </p>
-            ),
-          },
-          {
-            icon: <Check className="w-4.5 h-4.5" />,
-            label: "Corrects",
-            content: <p className="text-sm">{sudahData.stats.correct}</p>,
-          },
-          {
-            icon: <X className="w-4.5 h-4.5" />,
-            label: "Wrongs",
-            content: <p className="text-sm">{sudahData.stats.wrong}</p>,
+            content: <p className="text-sm">{sudahData.score}</p>,
           },
           {
             icon: <Calendar className="w-4.5 h-4.5" />,
             label: "Finished at",
             content: (
-              <p className="text-sm">
-                {formatDate(sudahData.stats.finishedDate)}
-              </p>
+              <p className="text-sm">{formatDate(sudahData.finishedAt!)}</p>
             ),
           },
         ]
@@ -299,106 +259,110 @@ const ChallengeDetails = () => {
       </div>
       <div className="flex flex-col ">
         <div className="flex w-full justify-center min-h-[200px] gap-5 overflow-hidden">
-          {[sortedRanks[1], sortedRanks[0], sortedRanks[2]].map((user, idx) => {
-            const profile = usersArray.find((u) => u.uid === user.uid);
-            const podiumRanks = [2, 1, 3];
-            const marginTop = [30, 10, 40];
-            const speed = [1.4, 1.2, 1.6];
-            return (
-              <div
-                key={user.uid}
-                style={{
-                  marginTop: marginTop[idx] + "px",
-                }}
-                className="flex flex-col items-center"
-              >
-                <motion.p
-                  className="font-bold flex items-start"
-                  initial={{
-                    opacity: 0,
-                  }}
-                  whileInView={{
-                    opacity: 1,
-                  }}
-                  transition={{
-                    delay: speed[idx],
-                  }}
-                  viewport={{ once: true }}
-                >
-                  {podiumRanks[idx]}
-                  <span className="text-[12px]">
-                    {getOrdinalSuffix(podiumRanks[idx])}
-                  </span>
-                </motion.p>
-                <motion.div
-                  className="flex flex-col items-center gap-2"
-                  initial={{
-                    y: 120,
-                    opacity: 0.8,
-                  }}
-                  whileInView={{
-                    y: 0,
-                    opacity: 1,
-                  }}
-                  transition={{
-                    duration: speed[idx],
-                    ease: "easeInOut",
-                  }}
-                  viewport={{ once: true }}
-                >
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <Avatar className="w-12 h-12">
-                        <AvatarImage src={profile?.photoURL} />
-                        <AvatarFallback>
-                          <User />
-                        </AvatarFallback>
-                      </Avatar>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{profile?.displayName}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  <AnimatedScore score={user.score} />
-                </motion.div>
-              </div>
-            );
-          })}
-        </div>
-        <InfoCard>
-          <div className="w-full flex flex-col">
-            {[...sortedRanks].splice(3, sortedRanks.length).map((user, idx) => {
+          {[challengeArray[1], challengeArray[0], challengeArray[2]].map(
+            (user, idx) => {
+              if (!user) {
+                return (
+                  <div
+                    key={"empty-" + idx}
+                    className="flex flex-col items-center opacity-40"
+                  >
+                    <p className="font-bold">-</p>
+                    <div className="w-12 h-12 bg-gray-200 rounded-full" />
+                  </div>
+                );
+              }
+
               const profile = usersArray.find((u) => u.uid === user.uid);
+              const podiumRanks = [2, 1, 3];
+              const marginTop = [30, 10, 40];
+              const speed = [1.4, 1.2, 1.6];
+
               return (
                 <div
                   key={user.uid}
-                  className={`w-full flex items-center gap-6 py-2.5 ${
-                    idx !== 0 ? "border-t border-black/10" : ""
-                  }`}
+                  style={{ marginTop: marginTop[idx] + "px" }}
+                  className="flex flex-col items-center"
                 >
-                  <p className="font-bold flex items-start">
-                    {idx + 4}
+                  <motion.p
+                    className="font-bold flex items-start"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    transition={{ delay: speed[idx] }}
+                    viewport={{ once: true }}
+                  >
+                    {podiumRanks[idx]}
                     <span className="text-[12px]">
-                      {getOrdinalSuffix(idx + 4)}
+                      {getOrdinalSuffix(podiumRanks[idx])}
                     </span>
-                  </p>
-                  <div className="flex items-center justify-between w-full">
-                    <div className="flex items-center gap-3">
-                      <Avatar>
-                        <AvatarImage src={profile?.photoURL} />
-                        <AvatarFallback>
-                          <User />
-                        </AvatarFallback>
-                      </Avatar>
-                      <p className="text-sm">{profile?.displayName}</p>
-                    </div>
+                  </motion.p>
+
+                  <motion.div
+                    className="flex flex-col items-center gap-2"
+                    initial={{ y: 120, opacity: 0.8 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    transition={{ duration: speed[idx], ease: "easeInOut" }}
+                    viewport={{ once: true }}
+                  >
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Avatar className="w-12 h-12">
+                          <AvatarImage src={profile?.photoURL} />
+                          <AvatarFallback>
+                            <User />
+                          </AvatarFallback>
+                        </Avatar>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{profile?.displayName || "Unknown User"}</p>
+                      </TooltipContent>
+                    </Tooltip>
+
                     <AnimatedScore score={user.score} />
-                  </div>
+                  </motion.div>
                 </div>
               );
-            })}
-          </div>
-        </InfoCard>
+            }
+          )}
+        </div>
+        {[...challengeArray].splice(3, challengeArray.length).length > 0 && (
+          <InfoCard>
+            <div className="w-full flex flex-col">
+              {[...challengeArray]
+                .splice(3, challengeArray.length)
+                .map((user, idx) => {
+                  const profile = usersArray.find((u) => u.uid === user.uid);
+                  return (
+                    <div
+                      key={user.uid}
+                      className={`w-full flex items-center gap-6 py-2.5 ${
+                        idx !== 0 ? "border-t border-black/10" : ""
+                      }`}
+                    >
+                      <p className="font-bold flex items-start">
+                        {idx + 4}
+                        <span className="text-[12px]">
+                          {getOrdinalSuffix(idx + 4)}
+                        </span>
+                      </p>
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center gap-3">
+                          <Avatar>
+                            <AvatarImage src={profile?.photoURL} />
+                            <AvatarFallback>
+                              <User />
+                            </AvatarFallback>
+                          </Avatar>
+                          <p className="text-sm">{profile?.displayName}</p>
+                        </div>
+                        <AnimatedScore score={user.score} />
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          </InfoCard>
+        )}
       </div>
     </PageLayout>
   );

@@ -1,20 +1,17 @@
 import { useNavbar } from "@/layout/navbar/NavbarLayout";
-import {
-  Badge,
-  House,
-  Settings,
-  User,
-  Users,
-  type LucideProps,
-} from "lucide-react";
+import { Badge, House, User, Users, type LucideProps } from "lucide-react";
+import { GiPodium } from "react-icons/gi";
 import { useLocation, useNavigate } from "react-router-dom";
+import { type IconType } from "react-icons/lib";
 
 type Item = {
   url: string;
   text: string;
-  icon: React.ForwardRefExoticComponent<
-    Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
-  >;
+  icon:
+    | React.ForwardRefExoticComponent<
+        Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
+      >
+    | IconType;
   activePaths?: string[];
 };
 
@@ -32,6 +29,12 @@ const items: Item[] = [
     activePaths: ["/challenges", "/challenges/:id"],
   },
   {
+    url: "/leaderboard",
+    text: "Leaderboard",
+    icon: GiPodium,
+    activePaths: ["/leaderboard"],
+  },
+  {
     url: "/friends",
     text: "Friends",
     icon: Users,
@@ -42,12 +45,6 @@ const items: Item[] = [
     text: "Profile",
     icon: User,
     activePaths: ["/profile"],
-  },
-  {
-    url: "/settings",
-    text: "Settings",
-    icon: Settings,
-    activePaths: ["/settings"],
   },
 ];
 

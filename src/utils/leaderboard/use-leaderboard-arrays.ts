@@ -3,18 +3,28 @@ import getObjectValues from "@/utils/firebase/get-object-values";
 import { type LeaderboardEntry } from "@/types/challenge";
 
 export const useLeaderboardArrays = (
-  leaderboard: LeaderboardEntry | null,
-  challenge: LeaderboardEntry | null,
-  uid: string | null
+  leaderboard?: LeaderboardEntry | null,
+  challenge?: LeaderboardEntry | null,
+  uid?: string | null
 ) => {
+  const sortLeaderboard = (arr: LeaderboardEntry[]) => {
+    return arr.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+
+      return (a.finishedAt ?? 0) - (b.finishedAt ?? 0);
+    });
+  };
+
   const leaderboardArray = useMemo(() => {
     if (!leaderboard) return [];
-    return getObjectValues(leaderboard);
+    const arr = getObjectValues(leaderboard) as LeaderboardEntry[];
+    return sortLeaderboard(arr);
   }, [leaderboard]);
 
   const challengeArray = useMemo(() => {
     if (!challenge) return [];
-    return getObjectValues(challenge);
+    const arr = getObjectValues(challenge) as LeaderboardEntry[];
+    return sortLeaderboard(arr);
   }, [challenge]);
 
   const userGlobalEntry = useMemo(() => {
@@ -29,14 +39,12 @@ export const useLeaderboardArrays = (
 
   const globalRank = useMemo(() => {
     if (!uid || leaderboardArray.length === 0) return null;
-    const sorted = [...leaderboardArray].sort((a, b) => b.score - a.score);
-    return sorted.findIndex((u) => u.uid === uid) + 1;
+    return leaderboardArray.findIndex((u) => u.uid === uid) + 1;
   }, [leaderboardArray, uid]);
 
   const challengeRank = useMemo(() => {
     if (!uid || challengeArray.length === 0) return null;
-    const sorted = [...challengeArray].sort((a, b) => b.score - a.score);
-    return sorted.findIndex((u) => u.uid === uid) + 1;
+    return challengeArray.findIndex((u) => u.uid === uid) + 1;
   }, [challengeArray, uid]);
 
   return {
