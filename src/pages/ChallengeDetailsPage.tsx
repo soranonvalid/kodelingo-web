@@ -7,6 +7,7 @@ import ErrPage from "@/components/ui/errPage";
 import useRealtimeValue from "@/utils/firebase/use-realtime-value";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
+  ArrowLeft,
   Calendar,
   Code,
   Play,
@@ -21,7 +22,7 @@ import { useChallenge } from "@/utils/challenges/use-challenge";
 import InfoCard from "@/components/ui/infoCard";
 import { firstLetterToUpperCase } from "@/lib/word";
 import getObjectValues from "@/utils/firebase/get-object-values";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Tooltip,
@@ -38,6 +39,7 @@ import { useLeaderboardArrays } from "@/utils/leaderboard/use-leaderboard-arrays
 import type { LeaderboardEntry } from "@/types/challenge";
 
 const ChallengeDetails = () => {
+  const [isProcess, setIsProcess] = useState<boolean>(false);
   const { id } = useParams();
   const { uid } = useUser();
   const navigate = useNavigate();
@@ -181,9 +183,28 @@ const ChallengeDetails = () => {
       : [],
   };
 
+  const handleDelete = async (id: string) => {
+    setIsProcess(true);
+    try {
+      console.log("deleting...");
+      await mongo.delete(`/challenges/${id}`);
+      navigate("/challenges");
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsProcess(false);
+    }
+  };
+
   return (
     <PageLayout>
-      <div className="flex justify-between items-center mb-5">
+      <div
+        onClick={() => {
+          navigate("/challenges");
+        }}
+        className="flex gap-3 items-center mb-5"
+      >
+        <ArrowLeft />
         <h1 className="font-bold">Challenge</h1>
       </div>
 
@@ -225,10 +246,18 @@ const ChallengeDetails = () => {
           </div>
         )}
         {uid === profile.uid && (
-          <div className="flex gap-2 text-red-500 items-center">
-            <Trash2Icon size={20} />
+          <button
+            disabled={isProcess ? true : false}
+            className={`flex gap-2 text-red-500 items-center text-sm ${
+              isProcess ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+            }`}
+            onClick={() => {
+              handleDelete(challenge._id);
+            }}
+          >
+            <Trash2Icon size={15} />
             Delete
-          </div>
+          </button>
         )}
       </div>
       <div className="my-2" />

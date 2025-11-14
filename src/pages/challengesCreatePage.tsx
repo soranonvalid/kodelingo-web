@@ -59,6 +59,7 @@ const ChallengesCreate: React.FC = () => {
   const [questionErrors, setQuestionErrors] = useState<(string | null)[]>(() =>
     questions.map(() => null)
   );
+  const [isProcess, setIsProcess] = useState<boolean>(false);
 
   useEffect(() => {
     setQuestionErrors((prev) => {
@@ -216,6 +217,7 @@ const ChallengesCreate: React.FC = () => {
       setFormError(null);
       setQuestionErrors((prev) => prev.map(() => null));
 
+      setIsProcess(true);
       try {
         const res = await mongo.post("/challenges", final);
         console.log("challenge created: ", res);
@@ -223,6 +225,8 @@ const ChallengesCreate: React.FC = () => {
       } catch (err: any) {
         console.error(err);
         setFormError(err);
+      } finally {
+        setIsProcess(false);
       }
       return final;
     },
@@ -313,7 +317,13 @@ const ChallengesCreate: React.FC = () => {
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Button className="cursor-pointer w-min" type="submit">
+          <Button
+            disabled={isProcess ? true : false}
+            className={`w-min ${
+              isProcess ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+            }`}
+            type="submit"
+          >
             Create
           </Button>
           {formError ? (

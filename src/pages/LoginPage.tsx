@@ -1,62 +1,39 @@
 import { SignInWithGoogle } from "@/services/firebase";
 import { withUnprotected } from "@/utils/auth/use-protected";
 import { motion } from "framer-motion";
-import { useState } from "react";
-
-const variants = {
-  initial: {
-    y: -3,
-    x: -3,
-    boxShadow: "3px 3px black",
-  },
-  hovered: {
-    y: 0,
-    x: 0,
-    boxShadow: "0px 0px black",
-  },
-  disabled: {
-    opacity: 0.5,
-    y: 0,
-    x: 0,
-    boxShadow: "0px 0px black",
-    cursor: "not-allowed",
-  },
-};
+import { DoorOpen } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const LogIn = async () => {
+    setIsLoading(true);
+    try {
+      await SignInWithGoogle();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
+    LogIn();
+  }, []);
   return (
-    <div className="w-full min-h-screen grid place-items-center">
-      <motion.button
-        variants={variants}
-        whileHover={"hovered"}
-        initial={"initial"}
-        animate={isLoading ? "disabled" : "initial"}
-        whileTap={"hovered"}
-        transition={{
-          ease: "linear",
-          duration: 0.1,
+    <div className="w-full min-h-screen flex flex-col gap-5 items-center justify-center pop">
+      <DoorOpen strokeWidth={1} size={50} />
+      <h1 className="text-4xl font-bold">Signing you in.</h1>
+      <button
+        onClick={() => {
+          LogIn();
         }}
-        disabled={isLoading}
-        className="border border-black px-4 py-1 hover:cursor-pointer flex justify-center items-center gap-2 flex-row-reverse"
-        onClick={async () => {
-          try {
-            setIsLoading(true);
-            await SignInWithGoogle();
-          } catch (err) {
-            console.error(err);
-          } finally {
-            setIsLoading(false);
-          }
-        }}
+        disabled={isLoading ? true : false}
+        className={`italic cursor-pointer font-light transition-smooth ${
+          isLoading ? "opacity-0" : "opacity-75"
+        }`}
       >
-        <span>Sign in witah Google</span>
-        <img
-          src="https://www.gstatic.com/marketing-cms/assets/images/d5/dc/cfe9ce8b4425b410b49b7f2dd3f3/g.webp=s96-fcrop64=1,00000000ffffffff-rw"
-          alt="google"
-          className="w-5 h-5 object-cover object-center"
-        />
-      </motion.button>
+        Click here to try again
+      </button>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import Loading from "@/components/Loading";
 import ErrPage from "@/components/ui/errPage";
+import RankCard from "@/components/ui/rankCard";
 import PageLayout from "@/layout/pageLayout";
 import type { LeaderboardEntry } from "@/types/challenge";
 import useRealtimeValue from "@/utils/firebase/use-realtime-value";
@@ -29,7 +30,11 @@ const LeaderboardPage = () => {
 
   return (
     <PageLayout>
-      <div>LeaderboardPage</div>
+      <section className="flex flex-col gap-3">
+        {leaderboardArray.map((l, idx) => (
+          <RankCard key={idx} rank={idx + 1} score={l.score} avatar={l.uid} />
+        ))}
+      </section>
     </PageLayout>
   );
 };
