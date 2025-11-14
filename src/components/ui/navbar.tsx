@@ -1,3 +1,4 @@
+import { useNavbar } from "@/layout/navbar/NavbarLayout";
 import {
   Badge,
   House,
@@ -53,6 +54,7 @@ const items: Item[] = [
 const Navbar = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { isOpen } = useNavbar();
 
   const isActive = (item: Item) =>
     item.activePaths?.some((path) => {
@@ -64,7 +66,12 @@ const Navbar = () => {
     });
 
   return (
-    <nav className="absolute bottom-0 border-t border-black/10 w-full left-0 flex items-center justify-around py-2 bg-white/80 backdrop-blur-md">
+    <nav
+      className="absolute bottom-0 border-t border-black/10 w-full left-0 flex items-center justify-around py-2 bg-white/80 backdrop-blur-md"
+      style={{
+        display: isOpen ? "" : "none",
+      }}
+    >
       {items.map((item) => {
         const Icon = item.icon;
         const active = isActive(item);

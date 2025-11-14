@@ -5,95 +5,198 @@ import type { Challenge } from "@/types/challenge";
 import { withProtected } from "@/utils/auth/use-protected";
 import { mongo } from "@/utils/mongo/api";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import Markdown from "react-markdown";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import InfoCard from "@/components/ui/infoCard";
+import { useWindowSize } from "@uidotdev/usehooks";
+import remarkGfm from "remark-gfm";
+import { useUser } from "@/context/user";
+import useRealtimeValue from "@/utils/firebase/use-realtime-value";
+import ResultContainer from "@/components/ResultContainer";
+import type { FirebaseUser } from "@/types/firebase";
+
+const shuffle = (array: string[]) => {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+};
 
 const Play = () => {
   const { id } = useParams();
+  const { uid } = useUser();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [selected, setSelected] = useState<string | null>(null);
+  const [isAnswered, setIsAnswered] = useState<boolean>(false);
+  const [correctsAnswer, setCorrectsAnswer] = useState<number>(0);
+  const [isCompleted, setIsCompleted] = useState<boolean>(false);
+  const { width } = useWindowSize();
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: [id],
+  const {
+    data: challenge,
+    isLoading: challengeLoading,
+    error: challengeError,
+  } = useQuery({
+    queryKey: ["challenge", id],
     queryFn: async () => {
-      const res = await mongo.get<Challenge>("/challenges/" + id);
+      if (!id) throw new Error("No challenge id");
+      const res = await mongo.get<Challenge>(`/challenges/${id}`);
       return res.data;
     },
+    enabled: !!id,
   });
 
-  useEffect(() => {
-    console.log(data);
-  }, [data, isLoading]);
+  const {
+    data: profile,
+    isLoading: profileLoading,
+    error: profileError,
+  } = useRealtimeValue<FirebaseUser>(`users/${uid}`);
+
+  const {
+    data: challengeLeaderboard,
+    isLoading: challengeLeaderboardLoading,
+    error: challengeLeaderboardError,
+  } = useRealtimeValue(`challenges/leaderboard/${id}`);
+
+  const {
+    data: leaderboard,
+    isLoading: leaderboardLoading,
+    error: leaderboardError,
+  } = useRealtimeValue("leaderboard");
 
   const currentQuestion = useMemo(() => {
-    if (!data) return null;
-    return data.questions[currentIndex];
-  }, [data, currentIndex]);
+    if (!challenge) return null;
+    return challenge.questions[currentIndex];
+  }, [challenge, currentIndex]);
 
-  if (isLoading) {
+  const shuffledOptions = useMemo(() => {
+    if (!currentQuestion) return [];
+    return shuffle(currentQuestion.options);
+  }, [currentQuestion]);
+
+  if (
+    challengeLoading ||
+    profileLoading ||
+    challengeLeaderboardLoading ||
+    leaderboardLoading
+  )
     return <Loading />;
-  }
-
-  if (!data || error || !currentQuestion) {
+  if (
+    !challenge ||
+    challengeError ||
+    !currentQuestion ||
+    !width ||
+    !profile ||
+    profileError ||
+    challengeLeaderboardError ||
+    leaderboardError
+  )
     return <ErrPage code={500} />;
-  }
 
-  const percentage = ((currentIndex + 1) / data.questions.length) * 100;
-  const type = currentQuestion.type;
+  const percentage = ((currentIndex + 1) / challenge.questions.length) * 100;
+
+  const handleSelect = (option: string) => {
+    if (isAnswered) return;
+    setSelected(option);
+    setIsAnswered(true);
+    if (currentQuestion.answer === option) {
+      setCorrectsAnswer((prev) => prev + 1);
+    }
+  };
+
+  const handleNext = () => {
+    setSelected(null);
+    setIsAnswered(false);
+    setCurrentIndex((prev) => prev + 1);
+  };
+
+  const handleComplete = () => {
+    if (currentIndex < challenge.questions.length - 1) return;
+    setIsCompleted(true);
+  };
+
+  if (isCompleted) {
+    return (
+      <PageLayout center>
+        <ResultContainer
+          correctsAnswer={correctsAnswer}
+          questionsLength={challenge.questions.length}
+          profile={profile}
+          challengeLeaderboard={challengeLeaderboard}
+          leaderboard={leaderboard}
+          challengeId={id as string}
+        />
+      </PageLayout>
+    );
+  }
 
   return (
     <PageLayout>
       <div className="flex justify-between items-center">
-        <h1 className="font-bold">{data.name}</h1>
+        <h1 className="font-bold">{challenge.name}</h1>
         <span>
-          Questions: {currentIndex + 1} / {data.questions.length}
+          Questions: {currentIndex + 1} / {challenge.questions.length}
         </span>
       </div>
+
       <div className="flex flex-col w-full mt-5">
         <div className="w-full h-2 bg-[#e2e2e2] rounded-full overflow-hidden">
           <motion.div
-            initial={{
-              width: 0,
-            }}
-            animate={{
-              width: `${percentage}%`,
-            }}
-            transition={{
-              ease: "easeInOut",
-              duration: 1,
-            }}
-            style={{ width: `${75}%` }}
-            className={`bg-amber-400 h-full`}
+            initial={{ width: 0 }}
+            animate={{ width: `${percentage}%` }}
+            transition={{ ease: "easeInOut", duration: 0.8 }}
+            className="bg-amber-400 h-full"
           />
         </div>
       </div>
+
       <div className="mt-10 text-xl">
-        <Markdown>{currentQuestion.text}</Markdown>
+        <Markdown remarkPlugins={[remarkGfm]}>{currentQuestion.text}</Markdown>
       </div>
+
       <div className="mt-10 flex flex-col gap-2">
-        {type === "multiple choice" ? (
-          currentQuestion.options.map((o) => {
-            return (
-              <motion.div
-                key={o}
-                className="rounded-2xl border border-black/10 min-w-full z-10 snap-start px-6 py-5 sm:py-3 sm:px-5 bg-[linear-gradient(234.98deg,#FFFFFF_49.95%,#F4F4F4_99.56%)] cursor-pointer"
-              >
-                {o}
-              </motion.div>
-            );
-          })
-        ) : (
-          <></>
-        )}
-        {/* {currentIndex < data.questions.length - 1 && (
-          <Button onClick={() => setCurrentIndex((prev) => prev + 1)}>
-            Next
-          </Button>
-        )} */}
+        {shuffledOptions.map((o, idx) => {
+          let bg = "linear-gradient(234.98deg,#FFFFFF 49.95%,#F4F4F4 99.56%)";
+
+          if (isAnswered) {
+            if (o === currentQuestion.answer)
+              bg = "linear-gradient(234.98deg,#D1FAE5 0%,#A7F3D0 100%)";
+            else if (o === selected)
+              bg = "linear-gradient(234.98deg,#FEE2E2 0%,#FCA5A5 100%)";
+          } else if (selected === o) {
+            bg = "linear-gradient(234.98deg,#FEF3C7 0%,#FDE68A 100%)";
+          }
+
+          return (
+            <motion.div
+              key={idx}
+              onClick={() => handleSelect(o)}
+              whileTap={{ scale: 0.98 }}
+              className="rounded-2xl border border-black/10 px-6 py-5 sm:py-3 sm:px-5 cursor-pointer"
+              initial={{ backgroundImage: bg }}
+              animate={{ backgroundImage: bg }}
+            >
+              {o}
+            </motion.div>
+          );
+        })}
       </div>
+
+      {isAnswered && currentIndex < challenge.questions.length - 1 && (
+        <Button className="mt-6" onClick={handleNext}>
+          Next
+        </Button>
+      )}
+
+      {isAnswered && currentIndex === challenge.questions.length - 1 && (
+        <Button className="mt-6" onClick={handleComplete}>
+          Complete
+        </Button>
+      )}
     </PageLayout>
   );
 };
