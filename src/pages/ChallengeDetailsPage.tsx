@@ -13,6 +13,7 @@ import {
   Play,
   SignalHigh,
   Star,
+  Trash2Icon,
   User,
   X,
 } from "lucide-react";
@@ -33,6 +34,8 @@ import { AnimatedScore } from "@/components/ui/animatedScore";
 import { Button } from "@/components/ui/button";
 import sudah from "@/data/challengeSudah.json";
 import { mongo } from "@/utils/mongo/api";
+import { getLangIco } from "@/utils/renderUtils";
+import { useUser } from "@/context/user";
 
 const ranks = [
   {
@@ -63,6 +66,7 @@ const ranks = [
 
 const ChallengeDetails = () => {
   const { id } = useParams();
+  const { uid } = useUser();
   const navigate = useNavigate();
   const {
     data: challenge,
@@ -155,7 +159,10 @@ const ChallengeDetails = () => {
         icon: <Code className="w-4.5 h-4.5" />,
         label: "Language",
         content: (
-          <p className="text-sm">{firstLetterToUpperCase(challenge.lang)}</p>
+          <div className="flex gap-2 items-center">
+            <p className="text-sm">{getLangIco(challenge.lang)}</p>
+            {challenge.lang}
+          </div>
         ),
       },
       {
@@ -240,7 +247,7 @@ const ChallengeDetails = () => {
           ))}
         </div>
       </InfoCard>
-      <div className="mt-3">
+      <div className="mt-3 flex gap-5 items-center">
         {sudah.some((item) => item.idChallenge === challenge._id) ? (
           <Button
             className="cursor-pointer bg-black"
@@ -255,6 +262,12 @@ const ChallengeDetails = () => {
           >
             <Play fill="white" size={15} />
             Play
+          </div>
+        )}
+        {uid === profile.uid && (
+          <div className="flex gap-2 text-red-500 items-center">
+            <Trash2Icon size={20} />
+            Delete
           </div>
         )}
       </div>

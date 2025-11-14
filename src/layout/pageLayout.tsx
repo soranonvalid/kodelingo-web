@@ -34,7 +34,7 @@ const PageLayout = ({
         <section
           className={`h-full mb-[62px] flex flex-col py-5 sm:py-3 px-3 overflow-x-hidden ${
             hideScroll && "hide-scroll"
-          } ${reqAnimation && "pop"} ${
+          } ${reqAnimation ? "pop" : "fade"} ${
             center && "justify-center items-center w-full"
           } ${scroll ? "overflow-y-scroll" : "overflow-y-hidden"}`}
         >
