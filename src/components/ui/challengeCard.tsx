@@ -58,7 +58,7 @@ const ChallengeCard = ({
           </Avatar>
           <p>{getProfile?.displayName}</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex md:gap-3 md:flex-row flex-col-reverse items-end gap-1">
           <Badge
             variant={getDifficulty(challenge.difficulty)}
             className="h-fit! px-1! py-0.2! font-bold rounded-sm"

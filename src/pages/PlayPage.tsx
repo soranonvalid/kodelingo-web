@@ -12,39 +12,100 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useWindowSize } from "@uidotdev/usehooks";
 import remarkGfm from "remark-gfm";
+import { useUser } from "@/context/user";
+import useRealtimeValue from "@/utils/firebase/use-realtime-value";
+import ResultContainer from "@/components/ResultContainer";
+import type { FirebaseUser } from "@/types/firebase";
+
+const shuffle = (array: string[]) => {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+};
 
 const Play = () => {
   const { id } = useParams();
+  const { uid } = useUser();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [isAnswered, setIsAnswered] = useState<boolean>(false);
   const [correctsAnswer, setCorrectsAnswer] = useState<number>(0);
+  const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const { width } = useWindowSize();
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: [id],
+  const {
+    data: challenge,
+    isLoading: challengeLoading,
+    error: challengeError,
+  } = useQuery({
+    queryKey: ["challenge", id],
     queryFn: async () => {
-      const res = await mongo.get<Challenge>("/challenges/" + id);
+      if (!id) throw new Error("No challenge id");
+      const res = await mongo.get<Challenge>(`/challenges/${id}`);
       return res.data;
     },
+    enabled: !!id,
   });
 
-  const currentQuestion = useMemo(() => {
-    if (!data) return null;
-    return data.questions[currentIndex];
-  }, [data, currentIndex]);
+  const {
+    data: profile,
+    isLoading: profileLoading,
+    error: profileError,
+  } = useRealtimeValue<FirebaseUser>(`users/${uid}`);
 
-  if (isLoading) return <Loading />;
-  if (!data || error || !currentQuestion || !width)
+  const {
+    data: challengeLeaderboard,
+    isLoading: challengeLeaderboardLoading,
+    error: challengeLeaderboardError,
+  } = useRealtimeValue(`challenges/leaderboard/${id}`);
+
+  const {
+    data: leaderboard,
+    isLoading: leaderboardLoading,
+    error: leaderboardError,
+  } = useRealtimeValue("leaderboard");
+
+  const currentQuestion = useMemo(() => {
+    if (!challenge) return null;
+    return challenge.questions[currentIndex];
+  }, [challenge, currentIndex]);
+
+  const shuffledOptions = useMemo(() => {
+    if (!currentQuestion) return [];
+    return shuffle(currentQuestion.options);
+  }, [currentQuestion]);
+
+  if (
+    challengeLoading ||
+    profileLoading ||
+    challengeLeaderboardLoading ||
+    leaderboardLoading
+  )
+    return <Loading />;
+  if (
+    !challenge ||
+    challengeError ||
+    !currentQuestion ||
+    !width ||
+    !profile ||
+    profileError ||
+    challengeLeaderboardError ||
+    leaderboardError
+  )
     return <ErrPage code={500} />;
 
-  const percentage = ((currentIndex + 1) / data.questions.length) * 100;
-  const type = currentQuestion.type;
+  const percentage = ((currentIndex + 1) / challenge.questions.length) * 100;
 
   const handleSelect = (option: string) => {
     if (isAnswered) return;
     setSelected(option);
     setIsAnswered(true);
+    if (currentQuestion.answer === option) {
+      setCorrectsAnswer((prev) => prev + 1);
+    }
   };
 
   const handleNext = () => {
@@ -53,12 +114,32 @@ const Play = () => {
     setCurrentIndex((prev) => prev + 1);
   };
 
+  const handleComplete = () => {
+    if (currentIndex < challenge.questions.length - 1) return;
+    setIsCompleted(true);
+  };
+
+  if (isCompleted) {
+    return (
+      <PageLayout center>
+        <ResultContainer
+          correctsAnswer={correctsAnswer}
+          questionsLength={challenge.questions.length}
+          profile={profile}
+          challengeLeaderboard={challengeLeaderboard}
+          leaderboard={leaderboard}
+          challengeId={id as string}
+        />
+      </PageLayout>
+    );
+  }
+
   return (
     <PageLayout>
       <div className="flex justify-between items-center">
-        <h1 className="font-bold">{data.name}</h1>
+        <h1 className="font-bold">{challenge.name}</h1>
         <span>
-          Questions: {currentIndex + 1} / {data.questions.length}
+          Questions: {currentIndex + 1} / {challenge.questions.length}
         </span>
       </div>
 
@@ -78,37 +159,42 @@ const Play = () => {
       </div>
 
       <div className="mt-10 flex flex-col gap-2">
-        {type === "multiple choice" &&
-          currentQuestion.options.map((o) => {
-            let bg = "linear-gradient(234.98deg,#FFFFFF 49.95%,#F4F4F4 99.56%)";
+        {shuffledOptions.map((o, idx) => {
+          let bg = "linear-gradient(234.98deg,#FFFFFF 49.95%,#F4F4F4 99.56%)";
 
-            if (isAnswered) {
-              if (o === currentQuestion.answer)
-                bg = "linear-gradient(234.98deg,#D1FAE5 0%,#A7F3D0 100%)";
-              else if (o === selected)
-                bg = "linear-gradient(234.98deg,#FEE2E2 0%,#FCA5A5 100%)";
-            } else if (selected === o) {
-              bg = "linear-gradient(234.98deg,#FEF3C7 0%,#FDE68A 100%)";
-            }
+          if (isAnswered) {
+            if (o === currentQuestion.answer)
+              bg = "linear-gradient(234.98deg,#D1FAE5 0%,#A7F3D0 100%)";
+            else if (o === selected)
+              bg = "linear-gradient(234.98deg,#FEE2E2 0%,#FCA5A5 100%)";
+          } else if (selected === o) {
+            bg = "linear-gradient(234.98deg,#FEF3C7 0%,#FDE68A 100%)";
+          }
 
-            return (
-              <motion.div
-                key={o}
-                onClick={() => handleSelect(o)}
-                whileTap={{ scale: 0.98 }}
-                className="rounded-2xl border border-black/10 px-6 py-5 sm:py-3 sm:px-5 cursor-pointer"
-                initial={{ backgroundImage: bg }}
-                animate={{ backgroundImage: bg }}
-              >
-                {o}
-              </motion.div>
-            );
-          })}
+          return (
+            <motion.div
+              key={idx}
+              onClick={() => handleSelect(o)}
+              whileTap={{ scale: 0.98 }}
+              className="rounded-2xl border border-black/10 px-6 py-5 sm:py-3 sm:px-5 cursor-pointer"
+              initial={{ backgroundImage: bg }}
+              animate={{ backgroundImage: bg }}
+            >
+              {o}
+            </motion.div>
+          );
+        })}
       </div>
 
-      {isAnswered && currentIndex < data.questions.length - 1 && (
+      {isAnswered && currentIndex < challenge.questions.length - 1 && (
         <Button className="mt-6" onClick={handleNext}>
           Next
+        </Button>
+      )}
+
+      {isAnswered && currentIndex === challenge.questions.length - 1 && (
+        <Button className="mt-6" onClick={handleComplete}>
+          Complete
         </Button>
       )}
     </PageLayout>

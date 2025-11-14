@@ -11,15 +11,10 @@ export interface BaseQuestion {
 }
 
 export interface MultipleChoiceQuestion extends BaseQuestion {
-  type: "multiple choice";
   options: string[];
 }
 
-export interface EssayQuestion extends BaseQuestion {
-  type: "essay";
-}
-
-export type Question = MultipleChoiceQuestion | EssayQuestion;
+export type Question = MultipleChoiceQuestion;
 
 export interface Challenge {
   _id: string;
