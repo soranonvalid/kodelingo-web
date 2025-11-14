@@ -18,6 +18,7 @@ import { Ellipsis, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/context/user";
 import { mongo } from "@/utils/mongo/api";
+import { useNavigate } from "react-router-dom";
 
 type Lang = "javascript" | "python" | "java" | "cpp" | "other";
 type Difficulty = "easy" | "intermediate" | "difficult";
@@ -70,9 +71,19 @@ const ChallengesCreate: React.FC = () => {
   const validateQuestion = useCallback((q: (typeof questions)[number]) => {
     if (!q.text || q.text.trim().length === 0)
       return "Question text is required";
+    if (!q.text || q.text.trim().length > 100)
+      return "Question text is too long (Max. 100)";
     const realOptions = q.optionsArr?.filter((o) => o.trim().length > 0) ?? [];
     if ((q.optionsArr?.[0] ?? "").trim().length === 0)
-      return "Top choice (answer) is required";
+      return "Top choice is required";
+
+    const len = q.optionsArr ? q.optionsArr.length : 0;
+    for (let i = 0; i < len; i++) {
+      const val = (q.optionsArr?.[i] ?? "").trim();
+      if (val.length > 50) return `choice ${i + 1} is too long (max. 50)`;
+      if (i !== 0 && val.length === 0) return `choice ${i + 1} is required`;
+    }
+
     if (realOptions.length < 2)
       return "At least two non-empty options are required";
     return null;
@@ -166,6 +177,7 @@ const ChallengesCreate: React.FC = () => {
     return null;
   }, [name, lang, difficulty, questions]);
 
+  const navigate = useNavigate();
   const handleCreate = useCallback(
     async (e?: React.FormEvent) => {
       e?.preventDefault();
@@ -207,6 +219,7 @@ const ChallengesCreate: React.FC = () => {
       try {
         const res = await mongo.post("/challenges", final);
         console.log("challenge created: ", res);
+        navigate(`/challenges/${res.data._id}`);
       } catch (err: any) {
         console.error(err);
         setFormError(err);
@@ -222,6 +235,7 @@ const ChallengesCreate: React.FC = () => {
       validateForm,
       buildFinalQuestions,
       uid,
+      navigate,
     ]
   );
 

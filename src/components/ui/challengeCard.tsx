@@ -10,6 +10,7 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useChallenge } from "@/utils/challenges/use-challenge";
 import { firstLetterToUpperCase } from "@/lib/word";
+import { getLangIco } from "@/utils/renderUtils";
 
 const ChallengeCard = ({
   challenge,
@@ -40,9 +41,7 @@ const ChallengeCard = ({
           </span>
         </div>
         <Tooltip>
-          <TooltipTrigger>
-            <SiJavascript size={25} color="black" />
-          </TooltipTrigger>
+          <TooltipTrigger>{getLangIco(challenge.lang)}</TooltipTrigger>
           <TooltipContent>
             <p>Javascript</p>
           </TooltipContent>

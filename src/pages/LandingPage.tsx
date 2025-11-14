@@ -15,22 +15,24 @@ import sudah from "@/data/challengeSudah.json";
 import type { Challenge } from "@/types/challenge";
 import { mongo } from "@/utils/mongo/api";
 import RankBadge from "@/components/ui/rankBadge";
-
-const user = {
-  photoURL:
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJJwZievtcRT0r69GUl5BYUPvxn66ZGJClig&s",
-  displayName: "soru",
-  streak: 32,
-  level: {
-    current: 21,
-    xp: 1000,
-  },
-  rank: {
-    status: 1,
-    score: 23498,
-  },
-};
+import { useUser } from "@/context/user";
+import { AnimatedScore } from "@/components/ui/animatedScore";
 const LandingPage = () => {
+  const { avatar, name } = useUser();
+
+  const user = {
+    photoURL: avatar || undefined,
+    displayName: name || "User",
+    streak: 32,
+    level: {
+      current: 21,
+      xp: 1000,
+    },
+    rank: {
+      status: 1,
+      score: 23498,
+    },
+  };
   const navigate = useNavigate();
   const {
     data: challenges,
@@ -62,17 +64,22 @@ const LandingPage = () => {
   if (challengesError || usersError) {
     return <ErrPage code={400} />;
   }
-
-  // const level = renderLevel(user.level.current, user.level.xp);
-  // console.log(level);
   return (
     <PageLayout>
       <main>
         <section className=" flex gap-3 overflow-x-auto sm:grid sm:grid-rows-2 sm:gap-3 sm:grid-cols-2 h-70 sm:h-100 w-full snap-x snap-mandatory scroll-smooth">
-          <InfoCard footer="Card 1">150</InfoCard>
-          <InfoCard footer="Card 2">120</InfoCard>
-          <InfoCard footer="Card 3">140</InfoCard>
-          <InfoCard footer="Card 4">180</InfoCard>
+          <InfoCard footer="Card 1">
+            <AnimatedScore score={150} />
+          </InfoCard>
+          <InfoCard footer="Card 2">
+            <AnimatedScore score={142} />
+          </InfoCard>
+          <InfoCard footer="Card 3">
+            <AnimatedScore score={198} />
+          </InfoCard>
+          <InfoCard footer="Card 4">
+            <AnimatedScore score={112} />
+          </InfoCard>
         </section>
         <SectionHead title={"Profile"} fx={true} path="/profile">
           <div className="flex sm:flex-row flex-col gap-2 sm:gap-10 items-center w-full">
@@ -91,7 +98,7 @@ const LandingPage = () => {
               <h2 className="text-2xl sm:text-left text-center font-semibold">
                 {user.displayName}
               </h2>
-              <div className="flex w- items-center gap-5">
+              <div className="flex w- items-center gap-3">
                 <RankBadge rank={1001} />
                 <div className="text-sm">{user.rank.score}</div>
               </div>

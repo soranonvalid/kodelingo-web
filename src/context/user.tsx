@@ -4,6 +4,7 @@ export interface UserState {
   email: string | null;
   uid: string | null;
   avatar: string | null;
+  name: string | null;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -11,6 +12,7 @@ export const InitialUserState: UserState = {
   email: null,
   uid: null,
   avatar: null,
+  name: null,
 };
 
 interface UserContextType extends UserState {

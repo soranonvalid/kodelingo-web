@@ -17,6 +17,10 @@
   animation: pop 0.2s ease-in-out;
 }
 
+.fade {
+  animation: fade 0.3s ease-in-out;
+}
+
 .transition-smooth {
   transition: all 0.2s ease-in-out;
 }
@@ -27,6 +31,17 @@
   }
   to {
     scale: 100%;
+  }
+}
+
+@keyframes fade {
+  from {
+    transform: translateX(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0px);
+    opacity: 1;
   }
 }
 
