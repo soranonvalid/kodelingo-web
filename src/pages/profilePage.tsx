@@ -124,7 +124,7 @@ const Profile = () => {
       </div>
       <div className="flex flex-col">
         <h1 className="font-bold">Your challenges</h1>
-        <div className="flex flex-col pt-5">
+        <div className="flex flex-col gap-3 pt-5">
           {(userChallenges &&
             userChallenges.map((challenge) => (
               <ChallengeCard challenge={challenge} usersArray={[user]} />
