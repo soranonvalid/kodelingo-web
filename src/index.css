@@ -167,3 +167,21 @@
     @apply bg-background text-foreground;
   }
 }
+
+code,
+kbd,
+samp,
+pre {
+  font-family: "Space Mono", monospace !important;
+}
+
+.w-md-editor-preview > * {
+  font-family: var(--font-jakarta) !important;
+
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: "Space Mono", monospace !important;
+  }
+}
