@@ -24,15 +24,15 @@ const router = createBrowserRouter([
         element: <ClientLayout />,
         children: [
           {
+            path: "/",
+            element: <LandingPage />,
+          },
+          {
             element: <NavbarLayout />,
             children: [
               {
                 path: "*",
                 element: <NotFoundPage />,
-              },
-              {
-                path: "/",
-                element: <LandingPage />,
               },
               {
                 path: "/home",
