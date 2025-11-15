@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import SectionHead from "@/components/ui/sectionHead";
 import {
@@ -14,11 +14,22 @@ import PageLayout from "@/layout/pageLayout";
 import { withProtected } from "@/utils/auth/use-protected";
 import { SiCplusplus, SiJavascript, SiPython } from "react-icons/si";
 import { FaJava } from "react-icons/fa";
-import { Ellipsis, Plus, Trash2, X } from "lucide-react";
+import { ClipboardX, DoorOpen, Ellipsis, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/context/user";
 import { mongo } from "@/utils/mongo/api";
 import { useNavigate } from "react-router-dom";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type Lang = "javascript" | "python" | "java" | "cpp" | "other";
 type Difficulty = "easy" | "intermediate" | "difficult";
@@ -60,6 +71,7 @@ const ChallengesCreate: React.FC = () => {
     questions.map(() => null)
   );
   const [isProcess, setIsProcess] = useState<boolean>(false);
+  const formRef = useRef<HTMLFormElement | null>(null);
 
   useEffect(() => {
     setQuestionErrors((prev) => {
@@ -247,6 +259,7 @@ const ChallengesCreate: React.FC = () => {
     <PageLayout scroll={false}>
       <SectionHead title="Create Challenge">
         <form
+          ref={formRef}
           className="flex flex-col gap-5"
           onSubmit={(e) => {
             e.preventDefault();
@@ -317,15 +330,89 @@ const ChallengesCreate: React.FC = () => {
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Button
-            disabled={isProcess ? true : false}
-            className={`w-min ${
-              isProcess ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-            }`}
-            type="submit"
-          >
-            Create
-          </Button>
+          <div className="flex items-center gap-5">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  type="button"
+                  disabled={isProcess}
+                  className={`w-min ${
+                    isProcess
+                      ? "opacity-50 cursor-not-allowed"
+                      : "cursor-pointer"
+                  }`}
+                >
+                  Create
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    You won't be able to edit after this, for the purpose of
+                    fair competition between challenges.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="cursor-pointer">
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    type="button"
+                    disabled={isProcess}
+                    className={`w-min ${
+                      isProcess
+                        ? "opacity-50 cursor-not-allowed"
+                        : "cursor-pointer"
+                    }`}
+                    onClick={() => {
+                      if (formRef.current?.requestSubmit) {
+                        formRef.current.requestSubmit();
+                      } else if (formRef.current) {
+                        formRef.current.submit();
+                      }
+                    }}
+                  >
+                    Continue
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+            <AlertDialog>
+              <AlertDialogTrigger
+                disabled={isProcess ? true : false}
+                className={`flex gap-2 text-red-500 items-center text-sm ${
+                  isProcess ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                }`}
+              >
+                <ClipboardX size={15} />
+                Discard
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Your challenge will be discarded, any changes won't be
+                    saved.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="cursor-pointer">
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    disabled={isProcess ? true : false}
+                    className="cursor-pointer bg-red-500"
+                    onClick={() => {
+                      navigate("/challenges");
+                    }}
+                  >
+                    Continue
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
           {formError ? (
             <p className="text-red-400 italic text-sm">{formError}</p>
           ) : null}

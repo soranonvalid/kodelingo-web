@@ -11,6 +11,17 @@ import { useLeaderboardArrays } from "@/utils/leaderboard/use-leaderboard-arrays
 import { LogOut, User } from "lucide-react";
 import { SignOut } from "@/services/firebase";
 import { useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const Profile = () => {
   const [isProcess, setIsProcess] = useState<boolean>(false);
@@ -30,11 +41,14 @@ const Profile = () => {
   if (error) return <ErrPage code={500} />;
 
   const handleLogout = async () => {
+    setIsProcess(true);
     try {
       await SignOut();
       console.log("Logged out");
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsProcess(false);
     }
   };
   return (
@@ -57,15 +71,38 @@ const Profile = () => {
             </div>
           </div>
         </div>
-        <button
-          onClick={handleLogout}
-          className={`flex gap-3 text-sm items-center transition-smooth mt-5 ${
-            isProcess ? "cursor-not-allowed opacity-50" : "cursor-pointer"
-          }`}
-        >
-          <LogOut size={17} />
-          <p>Sign Out</p>
-        </button>
+        <AlertDialog>
+          <AlertDialogTrigger
+            className={`flex gap-3 text-sm items-center text-red-500 transition-smooth mt-5 ${
+              isProcess ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+            }`}
+            disabled={isProcess ? true : false}
+          >
+            <LogOut size={17} />
+            Log Out
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                You will be logged out from the current session, You will
+                directed into log in as soon as you leave.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="cursor-pointer">
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction
+                disabled={isProcess ? true : false}
+                className="cursor-pointer bg-red-500"
+                onClick={handleLogout}
+              >
+                Log Out
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </PageLayout>
   );

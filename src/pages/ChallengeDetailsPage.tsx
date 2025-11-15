@@ -36,6 +36,17 @@ import { getLangIco } from "@/utils/renderUtils";
 import { useUser } from "@/context/user";
 import { useLeaderboardArrays } from "@/utils/leaderboard/use-leaderboard-arrays";
 import type { LeaderboardEntry } from "@/types/challenge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const ChallengeDetails = () => {
   const [isProcess, setIsProcess] = useState<boolean>(false);
@@ -252,18 +263,41 @@ const ChallengeDetails = () => {
           </div>
         )}
         {uid === profile.uid && (
-          <button
-            disabled={isProcess ? true : false}
-            className={`flex gap-2 text-red-500 items-center text-sm ${
-              isProcess ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-            }`}
-            onClick={() => {
-              handleDelete(challenge._id);
-            }}
-          >
-            <Trash2Icon size={15} />
-            Delete
-          </button>
+          <AlertDialog>
+            <AlertDialogTrigger
+              disabled={isProcess ? true : false}
+              className={`flex gap-2 text-red-500 items-center text-sm ${
+                isProcess ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+              }`}
+            >
+              <Trash2Icon size={15} />
+              Delete
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This challenge will be deleted. This only delete the challenge
+                  and the rank within it but the score wont be decreased once it
+                  deleted.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="cursor-pointer">
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  disabled={isProcess ? true : false}
+                  className="cursor-pointer bg-red-500"
+                  onClick={() => {
+                    handleDelete(challenge._id);
+                  }}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         )}
       </div>
       <div className="my-2" />
