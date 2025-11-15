@@ -31,7 +31,6 @@ import {
 } from "@/components/ui/tooltip";
 import { AnimatedScore } from "@/components/ui/animatedScore";
 import { Button } from "@/components/ui/button";
-import sudah from "@/data/challengeSudah.json";
 import { mongo } from "@/utils/mongo/api";
 import { getLangIco } from "@/utils/renderUtils";
 import { useUser } from "@/context/user";
@@ -62,6 +61,12 @@ const ChallengeDetails = () => {
   } = useRealtimeValue<FirebaseUser>(
     challenge ? `users/${challenge.author}` : null
   );
+
+  const {
+    data: result,
+    isLoading: resultLoading,
+    error: resultError,
+  } = useRealtimeValue(`challengeResults/${uid}`);
 
   const { getDifficulty, formatDate } = useChallenge();
 
@@ -111,12 +116,13 @@ const ChallengeDetails = () => {
     !profile ||
     usersLoading ||
     isLoading ||
-    sudahDataLoading
+    sudahDataLoading ||
+    resultLoading
   ) {
     return <Loading />;
   }
 
-  if (challengeError || profileError || usersError || error) {
+  if (challengeError || profileError || usersError || error || resultError) {
     return <ErrPage code={500} />;
   }
 
@@ -229,7 +235,7 @@ const ChallengeDetails = () => {
         </div>
       </InfoCard>
       <div className="mt-3 flex gap-5 items-center">
-        {sudah.some((item) => item.idChallenge === challenge._id) ? (
+        {Object.keys(result ?? {}).includes(challenge._id) ? (
           <Button
             className="cursor-pointer bg-black"
             onClick={() => navigate("/challenges/play/" + challenge._id)}

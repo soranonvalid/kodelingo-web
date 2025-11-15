@@ -11,6 +11,7 @@ interface PageLayoutProps {
   reqAnimation?: boolean;
   hideScroll?: boolean;
   backgroundColor?: string;
+  sectionPadding?: boolean;
 }
 
 const PageLayout = ({
@@ -20,6 +21,7 @@ const PageLayout = ({
   scroll = true,
   reqAnimation = false,
   hideScroll = true,
+  sectionPadding = true,
   backgroundColor = "",
   ...rest
 }: PageLayoutProps) => {
@@ -46,16 +48,17 @@ const PageLayout = ({
           padding && "px-3"
         }`}
         style={{
-            backgroundColor: backgroundColor,
-          }}
+          backgroundColor: backgroundColor,
+        }}
       >
         <section
-          className={`h-full mb-[62px] flex flex-col py-5 sm:py-3 px-3 overflow-x-hidden ${
+          className={`h-full md:mb-[59px] mb-[45px] flex flex-col py-5 sm:py-3 overflow-x-hidden relative ${
             hideScroll && "hide-scroll"
           } ${reqAnimation ? "pop" : "fade"} ${
             center && "justify-center items-center w-full"
-          } ${scroll ? "overflow-y-scroll" : "overflow-y-hidden"}`}
-          
+          } ${scroll ? "overflow-y-scroll" : "overflow-y-hidden"} ${
+            sectionPadding ? "px-3" : "px-0"
+          }`}
         >
           {children}
         </section>

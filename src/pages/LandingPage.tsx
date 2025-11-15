@@ -84,6 +84,7 @@ const Landing = () => {
 
   const userStats = leaderboardArray.find((l) => l.uid === uid);
   const userRank = leaderboardArray.indexOf(userStats!) + 1;
+
   return (
     <PageLayout>
       <main>
@@ -115,7 +116,7 @@ const Landing = () => {
           <div className="flex flex-col-reverse gap-3">
             {(challenges as Challenge[])
               .filter((challenge) =>
-                Object.keys(result ?? {}).some((item) => item === challenge._id)
+                Object.keys(result ?? {}).includes(challenge._id)
               )
               .map((challenge) => (
                 <ChallengeCard

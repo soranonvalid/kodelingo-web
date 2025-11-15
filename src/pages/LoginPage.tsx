@@ -1,6 +1,5 @@
 import { SignInWithGoogle } from "@/services/firebase";
 import { withUnprotected } from "@/utils/auth/use-protected";
-import { motion } from "framer-motion";
 import { DoorOpen } from "lucide-react";
 import { useEffect, useState } from "react";
 

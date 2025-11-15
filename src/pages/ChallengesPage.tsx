@@ -14,11 +14,12 @@ import useRealtimeValue from "@/utils/firebase/use-realtime-value";
 import getObjectValues from "@/utils/firebase/get-object-values";
 import ChallengeCard from "@/components/ui/challengeCard";
 import type { Challenge } from "@/types/challenge";
-import sudah from "@/data/challengeSudah.json";
 import { mongo } from "@/utils/mongo/api";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "@/context/user";
 
 const Challenges = () => {
+  const { uid } = useUser();
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<string>("");
 
@@ -33,6 +34,12 @@ const Challenges = () => {
       return res.data;
     },
   });
+
+  const {
+    data: result,
+    isLoading: resultLoading,
+    error: resultError,
+  } = useRealtimeValue(`challengeResults/${uid}`);
 
   const {
     data: users,
@@ -54,12 +61,13 @@ const Challenges = () => {
     !challenges ||
     !users ||
     usersLoading ||
-    usersArray.length == 0
+    usersArray.length == 0 ||
+    resultLoading
   ) {
     return <Loading />;
   }
 
-  if (challengesError || usersError) {
+  if (challengesError || usersError || resultError) {
     return <ErrPage code={400} />;
   }
 
@@ -97,7 +105,7 @@ const Challenges = () => {
         {challenges
           .filter(
             (challenge: Challenge) =>
-              !sudah.some((item) => item.idChallenge === challenge._id)
+              !Object.keys(result ?? {}).includes(challenge._id)
           )
           .filter(
             (challenge: Challenge) =>

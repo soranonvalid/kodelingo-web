@@ -30,7 +30,10 @@ const LeaderboardPage = () => {
 
   return (
     <PageLayout>
-      <section className="flex flex-col gap-3">
+      <div className="flex w-full items-center justify-between">
+        <h1 className="font-bold">Global Leaderboard</h1>
+      </div>
+      <section className="flex flex-col gap-3 mt-5">
         {leaderboardArray.map((l, idx) => (
           <RankCard key={idx} rank={idx + 1} score={l.score} avatar={l.uid} />
         ))}

@@ -96,7 +96,11 @@ const Chat = () => {
   }
 
   return (
-    <PageLayout backgroundColor="#FAFAFC">
+    <PageLayout
+      backgroundColor="#FAFAFC"
+      sectionPadding={false}
+      padding={false}
+    >
       <div className="w-full border-b flex items-center gap-4 bg-white p-2 absolute -top-px left-0">
         <button
           className="cursor-pointer"
@@ -116,7 +120,7 @@ const Chat = () => {
           {(friendProfile as FirebaseUser).displayName}
         </p>
       </div>
-      <div className="w-full flex-col flex gap-1 pb-30 pt-15 max-h-[calc(100svh-100px)] overflow-y-scroll hide-scroll">
+      <div className="w-full flex-col flex gap-1 pb-30 pt-15 max-h-[calc(100svh-100px)] overflow-y-scroll hide-scroll px-4">
         {chatList.map((message: ChatMessage, idx) => {
           return (
             <ChatContainer
@@ -128,10 +132,10 @@ const Chat = () => {
         })}
         <div ref={chatEndRef} />
       </div>
-      <div className="w-full absolute bottom-0 right-0 grid place-items-center pb-18 px-4 bg-white pt-3">
+      <div className="w-full absolute bottom-0 right-0 flex items-end justify-end px-4 bg-white pt-2 pb-2">
         <form
           onSubmit={handleSubmit(handleSend)}
-          className="w-full max-w-3xl relative"
+          className="w-full max-w-3xl relative h-full"
         >
           <TextareaAutoSize
             className={`w-full text-sm px-4 py-2 bg-black/5 focus:outline-2 focus:outline-black/50 font-jakarta focus:bg-[#DFDFDF]/25 resize-none hide-scroll transition-smooth ${
@@ -157,7 +161,7 @@ const Chat = () => {
           <Tooltip>
             <TooltipTrigger
               asChild
-              className="absolute right-3 bottom-2"
+              className="absolute right-3 bottom-3"
               style={{ display: watch("message") ? "" : "none" }}
             >
               <button className="hover:cursor-pointer">
