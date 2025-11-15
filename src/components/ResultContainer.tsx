@@ -2,7 +2,7 @@ import type { FirebaseUser } from "@/types/firebase";
 import { motion } from "framer-motion";
 import { AnimatedScore } from "./ui/animatedScore";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Medal, User } from "lucide-react";
+import { CornerDownRight, Medal, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { GiPodium } from "react-icons/gi";
 import { useUser } from "@/context/user";
@@ -10,6 +10,7 @@ import { useLeaderboardArrays } from "@/utils/leaderboard/use-leaderboard-arrays
 import type { LeaderboardEntry } from "@/types/challenge";
 import { useChallengeCompletion } from "@/utils/leaderboard/use-challenge-completion";
 import { useSubmitChallengeScore } from "@/utils/leaderboard/use-submit-challenge-score";
+import { useNavigate } from "react-router-dom";
 
 const ResultContainer = ({
   correctsAnswer,
@@ -61,8 +62,9 @@ const ResultContainer = ({
 
     console.log("[UPDATE] First time completion — updating score...");
     submitScore(attemptScore);
-  }, [alreadyCompleted]);
+  }, [alreadyCompleted, correctsAnswer, questionsLength, submitScore, uid]);
 
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col items-center">
       <div className="flex flex-col items-center">
@@ -75,7 +77,6 @@ const ResultContainer = ({
           </Avatar>
         </motion.div>
       </div>
-
       <motion.div
         className="overflow-hidden flex items-center mt-5"
         initial={{ height: 0, gap: 6 }}
@@ -111,7 +112,6 @@ const ResultContainer = ({
           <p className="text-black/50">Total score</p>
         </motion.div>
       </motion.div>
-
       <div className="flex md:gap-10 md:flex-row flex-col gap-4 mt-6">
         <div className="flex flex-col items-center">
           <span className="text-3xl">
@@ -131,6 +131,15 @@ const ResultContainer = ({
           </p>
         </div>
       </div>
+      <button
+        onClick={() => {
+          navigate(`/challenges/${challengeId}`);
+        }}
+        className="flex gap-3 py-15 italic opacity-45 pop cursor-pointer"
+      >
+        <CornerDownRight />
+        Return
+      </button>
     </div>
   );
 };

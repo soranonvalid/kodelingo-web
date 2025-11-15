@@ -30,6 +30,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import MDEditor, { commands } from "@uiw/react-md-editor";
 
 type Lang = "javascript" | "python" | "java" | "cpp" | "other";
 type Difficulty = "easy" | "intermediate" | "difficult";
@@ -84,8 +85,8 @@ const ChallengesCreate: React.FC = () => {
   const validateQuestion = useCallback((q: (typeof questions)[number]) => {
     if (!q.text || q.text.trim().length === 0)
       return "Question text is required";
-    if (!q.text || q.text.trim().length > 100)
-      return "Question text is too long (Max. 100)";
+    if (!q.text || q.text.trim().length > 250)
+      return "Question text is too long (Max. 250)";
     const realOptions = q.optionsArr?.filter((o) => o.trim().length > 0) ?? [];
     if ((q.optionsArr?.[0] ?? "").trim().length === 0)
       return "Top choice is required";
@@ -182,6 +183,7 @@ const ChallengesCreate: React.FC = () => {
   }, [questions]);
 
   const validateForm = useCallback(() => {
+    console.log(lang);
     if (!name || name.trim().length === 0) return "Challenge name is required";
     if (!lang) return "Language is required";
     if (!difficulty) return "Difficulty is required";
@@ -284,7 +286,7 @@ const ChallengesCreate: React.FC = () => {
             value={lang || undefined}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select Languange" />
+              <SelectValue placeholder="Select Language" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
@@ -426,14 +428,18 @@ const ChallengesCreate: React.FC = () => {
               key={qi}
               className="rounded-2xl border border-black/10 min-w-full z-10 snap-start px-6 py-5 sm:py-3 sm:px-5 flex flex-col gap-3 bg-[linear-gradient(234.98deg,#FFFFFF_49.95%,#F4F4F4_99.56%)]"
             >
-              <div className="flex items-center justify-between gap-2">
-                <Input
-                  type="text"
-                  placeholder={`Question ${qi + 1}`}
+              <div className="flex items-start justify-between gap-2 md-editor">
+                <MDEditor
+                  className="w-full max-h-140"
                   value={q.text}
-                  onChange={(ev: any) =>
-                    handleChangeQuestionField(qi, "text", ev.target.value)
+                  onChange={(v) =>
+                    handleChangeQuestionField(qi, "text", v || "")
                   }
+                  height={150}
+                  style={{ maxHeight: 250, overflowY: "auto" }}
+                  preview="edit"
+                  commands={[commands.code, commands.codeBlock]}
+                  extraCommands={[]}
                 />
                 {questions.length > 1 && (
                   <button
