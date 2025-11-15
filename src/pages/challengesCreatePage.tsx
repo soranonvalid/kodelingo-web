@@ -14,7 +14,7 @@ import PageLayout from "@/layout/pageLayout";
 import { withProtected } from "@/utils/auth/use-protected";
 import { SiCplusplus, SiJavascript, SiPython } from "react-icons/si";
 import { FaJava } from "react-icons/fa";
-import { ClipboardX, DoorOpen, Ellipsis, Plus, Trash2, X } from "lucide-react";
+import { ClipboardX, Ellipsis, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/context/user";
 import { mongo } from "@/utils/mongo/api";

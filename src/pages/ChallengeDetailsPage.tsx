@@ -11,6 +11,7 @@ import {
   Calendar,
   Code,
   Play,
+  Share,
   SignalHigh,
   Star,
   Trash2Icon,
@@ -47,9 +48,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import ShareChallengeModal from "@/components/ShareChallengeModal";
 
 const ChallengeDetails = () => {
   const [isProcess, setIsProcess] = useState<boolean>(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
   const { id } = useParams();
   const { uid } = useUser();
   const navigate = useNavigate();
@@ -215,14 +218,33 @@ const ChallengeDetails = () => {
 
   return (
     <PageLayout>
-      <div
-        onClick={() => {
-          navigate("/challenges");
-        }}
-        className="flex gap-3 items-center mb-5"
-      >
-        <ArrowLeft />
-        <h1 className="font-bold">Challenge</h1>
+      <div className="flex gap-3 items-center justify-between mb-5">
+        <div
+          className="flex gap-3 items-center cursor-pointer"
+          onClick={() => {
+            navigate("/challenges");
+          }}
+        >
+          <ArrowLeft size={17.5} />
+          <h1 className="font-bold">Challenge</h1>
+        </div>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                setIsShareOpen(true);
+              }}
+              className="cursor-pointer"
+            >
+              <Share size={17.5} />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Share</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
 
       <InfoCard>
@@ -299,6 +321,12 @@ const ChallengeDetails = () => {
             </AlertDialogContent>
           </AlertDialog>
         )}
+        <ShareChallengeModal
+          open={isShareOpen}
+          setOpen={setIsShareOpen}
+          users={usersArray}
+          challenge={challenge}
+        />
       </div>
       <div className="my-2" />
       {sudahData && (

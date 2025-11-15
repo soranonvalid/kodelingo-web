@@ -75,22 +75,21 @@ const Challenges = () => {
     <PageLayout>
       <div className="flex justify-between items-center">
         <h1 className="font-bold">Challenges</h1>
-        <button
-          onClick={() => {
-            navigate("/challenges/create");
-          }}
-        >
-          <Tooltip>
-            <TooltipTrigger asChild className="hover:cursor-pointer px-3">
-              <button className="relative">
-                <Plus className="w-4.5" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Create challenge</p>
-            </TooltipContent>
-          </Tooltip>
-        </button>
+        <Tooltip>
+          <TooltipTrigger asChild className="hover:cursor-pointer px-3">
+            <button
+              className="relative"
+              onClick={() => {
+                navigate("/challenges/create");
+              }}
+            >
+              <Plus className="w-4.5" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Create challenge</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
       <div className="w-full mt-2">
         <input
@@ -114,7 +113,11 @@ const Challenges = () => {
           )
           .map((challenge: Challenge) => {
             return (
-              <ChallengeCard challenge={challenge} usersArray={usersArray} />
+              <ChallengeCard
+                challenge={challenge}
+                usersArray={usersArray}
+                key={challenge._id}
+              />
             );
           })}
       </div>

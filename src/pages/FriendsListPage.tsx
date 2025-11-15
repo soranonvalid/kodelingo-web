@@ -46,10 +46,12 @@ const FriendsList = () => {
   const { data: friends, isLoading: friendsLoading } = useRealtimeValue<
     Record<string, boolean>
   >(`/friends/${uid}`);
+
   const { data: allRequests, isLoading: allRequestsLoading } =
     useRealtimeValue<Record<string, Record<string, Request>>>(
       "/friendRequests"
     );
+
   const navigate = useNavigate();
   const {
     handleSendRequest,
