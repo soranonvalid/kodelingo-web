@@ -1,6 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AuthLayout from "./layout/auth/AuthLayout";
-import LandingPage from "./pages/LandingPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import TestChatPage from "./pages/TestChatPage";
 import LoginPage from "./pages/LoginPage";
@@ -14,6 +13,8 @@ import ProfilePage from "./pages/profilePage";
 import ChallengesCreatePage from "./pages/challengesCreatePage";
 import NavbarLayout from "./layout/navbar/NavbarLayout";
 import LeaderboardPage from "./pages/LeaderboardPage";
+import HomePage from "./pages/HomePage";
+import LandingPage from "./pages/LandingPage";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
               {
                 path: "/",
                 element: <LandingPage />,
+              },
+              {
+                path: "/home",
+                element: <HomePage />,
               },
               {
                 path: "/login",

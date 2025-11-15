@@ -17,10 +17,10 @@ type Item = {
 
 const items: Item[] = [
   {
-    url: "/",
+    url: "/home",
     text: "Home",
     icon: House,
-    activePaths: ["/"],
+    activePaths: ["/home"],
   },
   {
     url: "/challenges",

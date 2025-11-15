@@ -9,7 +9,7 @@ export function withProtected<P extends object>(
     const user = useUser();
     const { uid } = user;
     if (!uid) {
-      router.replace("/login");
+      router.replace("/");
       return <></>;
     }
     return <Page {...props} />;
@@ -24,7 +24,7 @@ export function withUnprotected<P extends object>(
     const user = useUser();
     const { uid } = user;
     if (uid) {
-      router.replace("/");
+      router.replace("/home");
       return <></>;
     }
     return <Page {...props} />;
