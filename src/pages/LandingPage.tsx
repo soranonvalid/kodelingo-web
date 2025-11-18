@@ -30,6 +30,7 @@ const Landing = () => {
         <Container>
           <nav className="py-4 flex justify-between px-3 items-center">
             <img width={35} height={35} src="/logo.svg" alt="" />
+            <Button className="cursor-pointer">Get started</Button>
           </nav>
         </Container>
       </header>
@@ -55,7 +56,7 @@ const Landing = () => {
                 </Button>
                 <p
                   onClick={scrollToSection}
-                  className="underline tranisition-smooth text-sm cursor-pointer opacity-70 hover:opacity-100"
+                  className="underline transition-smooth text-sm cursor-pointer opacity-70 hover:opacity-100"
                 >
                   Know more
                 </p>
@@ -88,7 +89,7 @@ const Landing = () => {
           </section>
         </Container>
         <Container>
-          <section className="flex px-3 gap-10 flex-col md:flex-row">
+          <section className="flex px-3 gap-10 flex-col-reverse md:flex-row">
             <div className="flex-4 flex justify-center flex-col gap-3 text-center md:text-start">
               <h1 className="text-2xl font-bold">Ranking System</h1>
               <p className="text-center md:text-justify max-w-[358px] mx-auto md:mx-0 md:max-w-full">
@@ -107,7 +108,7 @@ const Landing = () => {
           </section>
         </Container>
         <Container>
-          <section className="flex px-3 gap-10 flex-col md:flex-row-reverse">
+          <section className="flex px-3 gap-10 flex-col-reverse md:flex-row-reverse">
             <div className="flex-4 flex justify-center flex-col gap-3 text-center md:text-start">
               <h1 className="text-2xl font-bold">Share and talk</h1>
               <p className="text-center md:text-justify max-w-[358px] mx-auto md:mx-0 md:max-w-full">
@@ -125,11 +126,12 @@ const Landing = () => {
             </div>
           </section>
         </Container>
-        <div className="bg-black text-white">
+        <div className="bg-black mt-20 relative text-white">
+          <div className="-top-20 absolute w-full h-20 bg-wave"></div>
           <Container>
             <div className="flex items-center justify-center py-10 flex-col gap-5">
               <h1 className="text-3xl font-bold">What are we waiting?</h1>
-              <p className="text-center max-w-[500px]">
+              <p className="text-center max-w-[500px] px-10 text-sm md:text-md">
                 Jump into fresh challenges, talk through ideas with people who
                 share your drive, and watch your rank rise as your skill
                 improves.
@@ -138,7 +140,7 @@ const Landing = () => {
                 onClick={() => {
                   navigate("/login");
                 }}
-                className="bg-white text-black hover:text-white cursor-pointer"
+                className="bg-white text-black mt-5 md:mt-0  hover:text-white cursor-pointer"
               >
                 Join now
               </Button>

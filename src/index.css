@@ -25,6 +25,12 @@
   transition: all 0.2s ease-in-out;
 }
 
+.bg-wave {
+  background: url(@/assets/wave.svg);
+  background-position: bottom;
+  background-repeat: repeat-x;
+}
+
 @keyframes pop {
   from {
     scale: 90%;
