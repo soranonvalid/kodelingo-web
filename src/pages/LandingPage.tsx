@@ -32,7 +32,14 @@ const Landing = () => {
         <Container>
           <nav className="py-4 flex justify-between px-3 items-center">
             <img width={35} height={35} src="/logo.svg" alt="" />
-            <Button className="cursor-pointer">Get started</Button>
+            <Button
+              onClick={() => {
+                navigate("/login");
+              }}
+              className="cursor-pointer"
+            >
+              Get started
+            </Button>
           </nav>
         </Container>
       </header>
