@@ -1,7 +1,7 @@
 import { withProtected } from "@/utils/auth/use-protected";
 import getObjectValues from "@/utils/firebase/get-object-values";
 import useRealtimeValue from "@/utils/firebase/use-realtime-value";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   Bell,
@@ -9,6 +9,7 @@ import {
   MessageCircleMore,
   User,
   UserCheck,
+  UserCircle,
   UserMinus,
   UserPlus,
   X,
@@ -32,6 +33,7 @@ import { useNavigate } from "react-router-dom";
 import PageLayout from "@/layout/pageLayout";
 import Loading from "@/components/Loading";
 import ErrPage from "@/components/ui/errPage";
+import { Button } from "@/components/ui/button";
 
 const FriendsList = () => {
   const { uid } = useUser();
@@ -61,6 +63,7 @@ const FriendsList = () => {
   } = useFriends();
   const [filteredUsers, setFilteredUsers] = useState<FirebaseUser[]>([]);
   const [isFocused, setIsFocused] = useState(false);
+  const searchRef = useRef<HTMLInputElement | null>(null);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -206,6 +209,7 @@ const FriendsList = () => {
           onChange={handleSearch}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          ref={searchRef}
         />
         {isFocused && filteredUsers.length > 0 ? (
           <div
@@ -268,10 +272,20 @@ const FriendsList = () => {
         <div className="w-full text-sm flex-col flex py-5 h-full text-black/60">
           <div className="flex flex-col justify-center items-center w-full">
             {!friends || Object.keys(friends).length === 0 ? (
-              <>
-                <span className="text-2xl">😭</span>
-                <span>You don't have friends</span>
-              </>
+              <div className="w-full h-50 flex flex-col gap-5 justify-center items-center text-black/50 text-center">
+                <UserCircle />
+                <p className="max-w-[229px]">
+                  It seems you don't have any friends.
+                </p>
+                <Button
+                  onClick={() => {
+                    searchRef.current?.focus();
+                  }}
+                  className="cursor-pointer"
+                >
+                  Search
+                </Button>
+              </div>
             ) : (
               Object.keys(friends || {}).map((fid) => {
                 const friend = users?.[fid];

@@ -47,9 +47,7 @@ const AuthStateChangeProvider = ({
 
   if (isLoading) {
     return (
-      <main className="w-full min-h-screen grid place-items-center">
-        <Loading />
-      </main>
+      <main className="w-full min-h-screen grid place-items-center"></main>
     );
   }
 

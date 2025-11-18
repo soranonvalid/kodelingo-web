@@ -31,7 +31,7 @@ const router = createBrowserRouter([
             element: <NavbarLayout />,
             children: [
               {
-                path: "*",
+                path: "/*",
                 element: <NotFoundPage />,
               },
               {
@@ -59,10 +59,10 @@ const router = createBrowserRouter([
                 element: <ChallengesCreatePage />,
               },
               {
-                path: "challenges/update/:id",
+                path: "/challenges/update/:id",
               },
               {
-                path: "leaderboard",
+                path: "/leaderboard",
                 element: <LeaderboardPage />,
               },
               {

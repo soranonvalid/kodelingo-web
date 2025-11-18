@@ -8,6 +8,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   type User,
+  signInWithRedirect,
 } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 

@@ -1,6 +1,6 @@
 import PageLayout from "@/layout/pageLayout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User } from "lucide-react";
+import { Antenna, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SectionHead from "@/components/ui/sectionHead";
 import ChallengeCard from "@/components/ui/challengeCard";
@@ -16,6 +16,7 @@ import RankBadge from "@/components/ui/rankBadge";
 import { useUser } from "@/context/user";
 import { useLeaderboardArrays } from "@/utils/leaderboard/use-leaderboard-arrays";
 import { withProtected } from "@/utils/auth/use-protected";
+import { Button } from "@/components/ui/button";
 const Home = () => {
   const { avatar, name, uid } = useUser();
 
@@ -85,6 +86,10 @@ const Home = () => {
   const userStats = leaderboardArray.find((l) => l.uid === uid);
   const userRank = leaderboardArray.indexOf(userStats!) + 1;
 
+  const done = (challenges as Challenge[]).filter((ch) =>
+    Object.keys(result ?? {}).includes(ch._id)
+  );
+
   return (
     <PageLayout>
       <main>
@@ -114,17 +119,30 @@ const Home = () => {
         </SectionHead>
         <SectionHead title={"Challenges"} fx={true} path="/challenges">
           <div className="flex flex-col-reverse gap-3">
-            {(challenges as Challenge[])
-              .filter((challenge) =>
-                Object.keys(result ?? {}).includes(challenge._id)
-              )
-              .map((challenge) => (
+            {done.length > 0 ? (
+              done.map((ch) => (
                 <ChallengeCard
-                  key={challenge._id}
-                  challenge={challenge}
+                  key={ch._id}
+                  challenge={ch}
                   usersArray={usersArray}
                 />
-              ))}
+              ))
+            ) : (
+              <div className="w-full h-50 flex flex-col gap-5 justify-center items-center text-black/50 text-center">
+                <Antenna />
+                <p className="max-w-[229px]">
+                  It seems you haven't completed any challenges.
+                </p>
+                <Button
+                  onClick={() => {
+                    navigate("/challenges");
+                  }}
+                  className="cursor-pointer"
+                >
+                  Search
+                </Button>
+              </div>
+            )}
           </div>
         </SectionHead>
       </main>

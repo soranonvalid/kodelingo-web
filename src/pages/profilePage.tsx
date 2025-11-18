@@ -8,7 +8,7 @@ import type { Challenge, LeaderboardEntry } from "@/types/challenge";
 import { withProtected } from "@/utils/auth/use-protected";
 import useRealtimeValue from "@/utils/firebase/use-realtime-value";
 import { useLeaderboardArrays } from "@/utils/leaderboard/use-leaderboard-arrays";
-import { LogOut, User } from "lucide-react";
+import { Antenna, LogOut, User } from "lucide-react";
 import { SignOut } from "@/services/firebase";
 import { useState } from "react";
 import {
@@ -26,6 +26,8 @@ import { useQuery } from "@tanstack/react-query";
 import { mongo } from "@/utils/mongo/api";
 import ChallengeCard from "@/components/ui/challengeCard";
 import type { FirebaseUser } from "@/types/firebase";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const Profile = () => {
   const [isProcess, setIsProcess] = useState<boolean>(false);
@@ -51,6 +53,7 @@ const Profile = () => {
   } = useRealtimeValue<FirebaseUser>(`users/${uid}`);
 
   const { leaderboardArray } = useLeaderboardArrays(leaderboard, null, null);
+  const navigate = useNavigate();
 
   const userStats = leaderboardArray.find((l) => l.uid === uid);
   const userRank = leaderboardArray.indexOf(userStats!) + 1;
@@ -129,10 +132,19 @@ const Profile = () => {
             userChallenges.map((challenge) => (
               <ChallengeCard challenge={challenge} usersArray={[user]} />
             ))) || (
-            <div className="grid place-items-center mt-10">
-              <p className="text-sm text-black/50 text-center">
-                Create your challenge and share it with your friends!
+            <div className="w-full h-50 flex flex-col gap-5 justify-center items-center text-black/50 text-center">
+              <Antenna />
+              <p className="max-w-[229px]">
+                It seems you haven't make any challenge.
               </p>
+              <Button
+                onClick={() => {
+                  navigate("/challenges/create");
+                }}
+                className="cursor-pointer"
+              >
+                Create
+              </Button>
             </div>
           )}
         </div>
