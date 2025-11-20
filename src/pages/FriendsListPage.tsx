@@ -75,12 +75,16 @@ const FriendsList = () => {
       return setFilteredUsers(
         getObjectValues(users as object).filter(
           (user) =>
-            user.email.toLowerCase().includes(value.toLowerCase()) ||
-            user.displayName.toLowerCase().includes(value.toLowerCase())
+            String(user.email).toLowerCase().includes(value.toLowerCase()) ||
+            String(user.displayName).toLowerCase().includes(value.toLowerCase())
         )
       );
     }
   };
+
+  useEffect(() => {
+    console.log(filteredUsers);
+  }, [filteredUsers]);
 
   useEffect(() => {
     console.log(friends);

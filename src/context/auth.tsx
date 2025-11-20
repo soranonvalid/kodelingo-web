@@ -1,7 +1,7 @@
 import { auth } from "@/services/firebase";
 import { useEffect, useState, type ReactNode } from "react";
 import { InitialUserState, useUser } from "./user";
-import Loading from "@/components/Loading";
+// import Loading from "@/components/Loading";
 import useCreateValue from "@/utils/firebase/use-create-value";
 
 interface AuthStateChangeProviderProps {

@@ -15,6 +15,7 @@ import NavbarLayout from "./layout/navbar/NavbarLayout";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import HomePage from "./pages/HomePage";
 import LandingPage from "./pages/LandingPage";
+import SandboxPage from "./pages/SandboxPage";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
               {
                 path: "/home",
                 element: <HomePage />,
+              },
+              {
+                path: "/sandbox",
+                element: <SandboxPage />,
               },
               {
                 path: "/login",

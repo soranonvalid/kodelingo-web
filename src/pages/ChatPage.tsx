@@ -101,7 +101,7 @@ const Chat = () => {
       sectionPadding={false}
       padding={false}
     >
-      <div className="w-full border-b flex items-center gap-4 bg-white p-2 absolute -top-px left-0">
+      <div className="w-full border-b flex items-center gap-4 bg-white p-2 absolute -top-px left-0 z-9999">
         <button
           className="cursor-pointer"
           onClick={() => {
@@ -132,7 +132,7 @@ const Chat = () => {
         })}
         <div ref={chatEndRef} />
       </div>
-      <div className="w-full absolute bottom-0 right-0 flex items-end justify-end px-4 bg-white pt-2 pb-2">
+      <div className="w-full absolute bottom-0 right-0 flex items-end justify-end px-4 bg-white pt-2 pb-2 z-99999">
         <form
           onSubmit={handleSubmit(handleSend)}
           className="w-full max-w-3xl relative h-full"

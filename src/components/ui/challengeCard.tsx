@@ -42,7 +42,7 @@ const ChallengeCard = ({
         <Tooltip>
           <TooltipTrigger>{getLangIco(challenge.lang)}</TooltipTrigger>
           <TooltipContent>
-            <p>Javascript</p>
+            <p>Category</p>
           </TooltipContent>
         </Tooltip>
       </div>

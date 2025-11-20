@@ -59,7 +59,8 @@ const Profile = () => {
   const userRank = leaderboardArray.indexOf(userStats!) + 1;
 
   if (isLoading || userChallengesLoading || userLoading) return <Loading />;
-  if (error || userError || !user) return <ErrPage code={500} />;
+  if (error || userError || !user || !userChallenges)
+    return <ErrPage code={500} />;
 
   const handleLogout = async () => {
     setIsProcess(true);
@@ -128,7 +129,7 @@ const Profile = () => {
       <div className="flex flex-col">
         <h1 className="font-bold">Your challenges</h1>
         <div className="flex flex-col gap-3 pt-5">
-          {(userChallenges &&
+          {(userChallenges.length > 0 &&
             userChallenges.map((challenge) => (
               <ChallengeCard challenge={challenge} usersArray={[user]} />
             ))) || (
